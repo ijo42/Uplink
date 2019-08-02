@@ -66,6 +66,19 @@ processResources {
     }
 }
 
+runClient {
+
+    args = ["--username=ijo42"]
+    jvmArgs "-Xmx1G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+
+}
+
+runServer {
+
+    jvmArgs "-Xmx1G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+
+}
+
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
