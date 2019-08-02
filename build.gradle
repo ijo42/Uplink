@@ -71,3 +71,14 @@ jar {
 }
 
 jar.archiveName = "${modBaseName}-${project.minecraft.version}-${project.version}-mod.jar"
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    keyStore="fingerprint.jks"
+	alias="signFiles"
+	storePass="someTrue"
+	keyPass="someTrue"
+}
+
+build.dependsOn signJar
