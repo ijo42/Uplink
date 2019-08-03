@@ -37,7 +37,7 @@ class PresenceManager {
         loadingGame.largeImageText = "Minecraft";
 
         mainMenu.state = "In the Main Menu";
-        mainMenu.largeImageKey = "state-default";
+        mainMenu.largeImageKey = "pack_menu";
         mainMenu.largeImageText = "Main Menu";
 
         SmallDisplay smallData = dataManager.getSmallDisplays().get(this.config.smallDataUid);
@@ -124,7 +124,7 @@ class PresenceManager {
         inGame.state = "Lonely play..";
         inGame.details = "IGN: " + MiscUtil.getIGN();
         inGame.startTimestamp = startTime;
-        inGame.largeImageKey = "state-default";
+        inGame.largeImageKey = "pack_menu";
         inGame.largeImageText = "World: " + world;
         inGame.partyId = "";
         inGame.partySize = 0;

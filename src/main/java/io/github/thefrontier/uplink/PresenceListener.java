@@ -37,7 +37,7 @@ public class PresenceListener {
             curTick = 0;
 
             try {
-                int playerCount = Minecraft.getMinecraft().getCurrentServerData().playerList.length();
+                int playerCount = Minecraft.getMinecraft().getConnection().getPlayerInfoMap().size();
                 int maxPlayers = Minecraft.getMinecraft().getConnection().currentServerMaxPlayers;
 
                 if (this.curPlayerCount != playerCount) {
