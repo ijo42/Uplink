@@ -9,4 +9,4 @@ If you are not seeing anything, it's because Uplink is broken up by git branch.
 - [1.10.2 branch](https://github.com/ijo42/Uplink/tree/mod-1.10)
 - [1.12.2 branch](https://github.com/ijo42/Uplink/tree/mod-1.12)
 
-[Original mod](https://github.com/TheFrontier/Uplink)
+So, thats mod is a fork [Original mod](https://github.com/TheFrontier/Uplink)
