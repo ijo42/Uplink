@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
         jcenter()
         maven {
             name = "forge"
@@ -12,7 +11,6 @@ buildscript {
         classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
     }
 }
-
 apply plugin: "forge"
 apply plugin: "java"
 
@@ -26,6 +24,11 @@ archivesBaseName = modBaseName
 minecraft {
     version = project.forgeVersion
     runDir = "run"
+
+    replace "@MCVERSION@", project.modVersion
+    replaceIn "Uplink.java"
+
+    mappings = project.mcpVersion
 }
 
 repositories {
@@ -44,27 +47,36 @@ configurations {
 }
 
 dependencies {
-    embed 'com.github.MinnDevelopment:Java-DiscordRPC:v1.3.1'
-    compile 'com.github.MinnDevelopment:discord-rpc-release:v3.1.0'
+    embed 'club.minnced:java-discord-rpc:v2.0.1'
+    compile 'club.minnced:java-discord-rpc:v2.0.1'
 }
 
 processResources {
-    // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
 
-        // replace version and mcversion
         expand "version": project.version, "mcversion": project.minecraft.version
     }
 
-    // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude "mcmod.info"
     }
+}
+
+runClient {
+
+    args = ["--username=ijo42"]
+    jvmArgs "-Xmx1G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+
+}
+
+runServer {
+
+    jvmArgs "-Xmx1G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+
 }
 
 jar {
@@ -72,3 +84,6 @@ jar {
 }
 
 jar.archiveName = "${modBaseName}-${project.minecraft.version}-${project.version}-mod.jar"
+
+
+build.dependsOn 
