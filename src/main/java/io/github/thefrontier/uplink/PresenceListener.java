@@ -69,7 +69,7 @@ public class PresenceListener {
             return;
         }
 
-        ServerData curServer = Minecraft.getMinecraft().func_147104_D();
+        ServerData curServer = Minecraft.getMinecraft().getCurrentServerData();
 
         if (curServer != null) {
             if (presenceManager.getCurState() == PresenceState.INGAME) {
