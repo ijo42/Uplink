@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
-import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
@@ -20,14 +19,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-@Mod(modid = Uplink.MOD_ID, name = Uplink.MOD_NAME, version = Uplink.VERSION,  certificateFingerprint = Uplink.fingerPrint)
+@Mod(modid = Uplink.MOD_ID, name = Uplink.MOD_NAME, version = Uplink.VERSION)
 public class Uplink {
 
     // ---------- Statics ---------- //
 
     public static final String MOD_ID = "uplink";
     public static final String MOD_NAME = "Uplink";
-    public static final String fingerPrint = "1f65d37574f980a4ef0a9e298690765308152c20";
     public static final String VERSION = "@MCVERSION@";
     public static final Logger LOGGER = LogManager.getLogger("Uplink");
 
@@ -124,11 +122,5 @@ public class Uplink {
         Runtime.getRuntime().addShutdownHook(new Thread(callbackHandler::interrupt));
 
         RPC.Discord_UpdatePresence(manager.loadingGame());
-    }
-
-    @Mod.EventHandler
-    public void onFingerprintViolation (FMLFingerprintViolationEvent event) {
-
-        LOGGER.error("Invalid fingerprint detected! The file " + event.source.getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 }
