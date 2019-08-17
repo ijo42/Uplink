@@ -1,13 +1,13 @@
 package io.github.thefrontier.uplink;
 
 import club.minnced.discord.rpc.DiscordRichPresence;
+import cpw.mods.fml.common.Loader;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
 import io.github.thefrontier.uplink.config.display.SmallDisplay;
 import io.github.thefrontier.uplink.util.MiscUtil;
 
-import static io.github.thefrontier.uplink.util.MiscUtil.epochSecond;
 
 class PresenceManager {
 
@@ -18,6 +18,12 @@ class PresenceManager {
     private final DiscordRichPresence mainMenu = new DiscordRichPresence();
     private final DiscordRichPresence inGame = new DiscordRichPresence();
 
+    public static final long startTime;
+
+    static{
+        startTime = MiscUtil.epochSecond();
+    }
+
     private PresenceState curState = PresenceState.INIT;
 
     PresenceManager(DisplayDataManager dataManager, Config config) {
@@ -25,11 +31,11 @@ class PresenceManager {
         this.config = config;
 
         loadingGame.state = "Loading the Game";
-        loadingGame.largeImageKey = "state-default";
+        loadingGame.largeImageKey = "state-load";
         loadingGame.largeImageText = "Minecraft";
 
         mainMenu.state = "In the Main Menu";
-        mainMenu.largeImageKey = "state-default";
+        mainMenu.largeImageKey = "state-menu";
         mainMenu.largeImageText = "Main Menu";
 
         SmallDisplay smallData = dataManager.getSmallDisplays().get(this.config.smallDataUid);
@@ -69,12 +75,15 @@ class PresenceManager {
     // -------------------- Mutators -------------------- //
 
     DiscordRichPresence loadingGame() {
-        loadingGame.startTimestamp = epochSecond();
+        int mods = (int) Loader.instance().getModList().stream().count();
+        loadingGame.startTimestamp = startTime;
+        loadingGame.details = String.format("With %d mods", mods);
         return loadingGame;
     }
 
     DiscordRichPresence mainMenu() {
-        mainMenu.startTimestamp = epochSecond();
+        mainMenu.startTimestamp = startTime;
+
         return mainMenu;
     }
 
@@ -92,9 +101,9 @@ class PresenceManager {
             inGame.largeImageText = "IP: " + ip;
         }
 
-        inGame.state = "In a Server";
+        inGame.state = "Playing with friends <3";
         inGame.details = "IGN: " + MiscUtil.getIGN();
-        inGame.startTimestamp = epochSecond();
+        inGame.startTimestamp = startTime;
         inGame.partyId = ip;
         inGame.partySize = playerCount;
         inGame.partyMax = maxPlayers;
@@ -110,10 +119,10 @@ class PresenceManager {
     }
 
     DiscordRichPresence ingameSP(String world) {
-        inGame.state = "In Singleplayer";
+        inGame.state = "Lonely play..";
         inGame.details = "IGN: " + MiscUtil.getIGN();
-        inGame.startTimestamp = epochSecond();
-        inGame.largeImageKey = "state-default";
+        inGame.startTimestamp = startTime;
+        inGame.largeImageKey = "state-singleplayer";
         inGame.largeImageText = "World: " + world;
         inGame.partyId = "";
         inGame.partySize = 0;
