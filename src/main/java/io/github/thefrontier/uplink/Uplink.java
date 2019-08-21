@@ -32,6 +32,8 @@ public class Uplink {
     @Mod.Instance(MOD_ID)
     public static Uplink INSTANCE;
 
+    public Path configDir;
+
     private static DiscordRPC RPC;
 
     static {
@@ -50,6 +52,7 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
+        configDir = event.getModConfigurationDirectory().toPath();
         PresenceManager manager = setupPresenceManager(event.getModConfigurationDirectory().toPath().resolve("Uplink.json"));
 
         if (hasErrors) {
