@@ -1,6 +1,7 @@
 package io.github.thefrontier.uplink.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.thefrontier.uplink.Uplink;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
@@ -15,26 +16,36 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LoadingUtils {
 
-    public static boolean isUsingWeb(Config.DisplayUrls config){
-        if((config.gui.startsWith("https") || config.gui.startsWith("http"))
+    public static final Gson gson = new GsonBuilder().create();
+    public static Path configPath;
+    public static Config config;
+
+    public LoadingUtils(Path configPath, Config config) {
+        LoadingUtils.configPath = configPath;
+        LoadingUtils.config = config;
+    }
+
+    public static boolean isUsingWeb(){
+        if((config.displayUrls.gui.startsWith("https") || config.displayUrls.gui.startsWith("http"))
                 &&
-                (config.server.startsWith("https") || config.server.startsWith("http"))
+                (config.displayUrls.server.startsWith("https") || config.displayUrls.server.startsWith("http"))
                 &&
-                (config.small.startsWith("https") || config.small.startsWith("http")))
+                (config.displayUrls.small.startsWith("https") || config.displayUrls.small.startsWith("http")))
             return true;
         else
             return false;
     }
 
-    public static boolean isUsingFile(Config.DisplayUrls config){
-        if(     (config.gui.startsWith("file://"))
+    public static boolean isUsingFile(){
+        if(     (config.displayUrls.gui.startsWith("file://"))
                 &&
-                (config.server.startsWith("file://"))
+                (config.displayUrls.server.startsWith("file://"))
                 &&
-                (config.small.startsWith("file://"))
+                (config.displayUrls.small.startsWith("file://"))
         )
             return true;
         else
@@ -42,10 +53,8 @@ public class LoadingUtils {
     }
 
     public static List<URL> genURLs(Config config, Logger logger) throws MalformedURLException {
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
 
-        urls.add(new URL(isUseJSON(config.displayUrls.gui)? config.displayUrls.gui :
-                config.displayUrls.gui + config.clientId + ".json"));
         urls.add(new URL(isUseJSON(config.displayUrls.small)? config.displayUrls.small :
                 config.displayUrls.small + config.clientId + ".json"));
         urls.add(new URL(isUseJSON(config.displayUrls.server) ? config.displayUrls.server :
@@ -57,25 +66,31 @@ public class LoadingUtils {
         return urls;
     }
 
-    public static Object[] loadFromLocal(Gson gson) throws IOException {
-        ServerDisplay[] serverArr;
-        SmallDisplay[] smallArr;
-        smallArr = gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Smalls.json")), SmallDisplay[].class);
-        serverArr = gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Servers.json")), ServerDisplay[].class);
-        return new Object[] { smallArr, serverArr };
+    public static SmallDisplay[] loadFromWeb(SmallDisplay ignored, URL url) throws IOException {
+        return gson.fromJson(new InputStreamReader(url.openStream()), SmallDisplay[].class);
+    }
+    public static ServerDisplay[] loadFromWeb(ServerDisplay ignored, URL url) throws IOException {
+        return gson.fromJson(new InputStreamReader(url.openStream()), ServerDisplay[].class);
     }
 
-    public static Object[] loadFromLocal(Gson gson, Path configPath, Config config) throws IOException {
-        ServerDisplay[] serverArr;
-        SmallDisplay[] smallArr;
-        configPath.resolve(config.displayUrls.small.substring(config.displayUrls.small.indexOf("/")+1));
-        smallArr = gson.fromJson(Files.newBufferedReader(configPath), SmallDisplay[].class);
-
-        serverArr = gson.fromJson(Files.newBufferedReader(configPath), ServerDisplay[].class);
-        return new Object[] { smallArr, serverArr };
+    public static SmallDisplay[] loadFromLocal(SmallDisplay ignored) throws IOException {
+        return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Smalls.json")), SmallDisplay[].class);
+    }
+    public static ServerDisplay[] loadFromLocal(ServerDisplay ignored) throws IOException {
+        return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Servers.json")), ServerDisplay[].class);
     }
 
-    private static boolean isUseJSON(String str){
+    public static SmallDisplay[] loadFromLocalFile(SmallDisplay ignored) throws IOException {
+                                               // 'file://' : 7
+        configPath.resolve(config.displayUrls.small.substring(7));
+        return gson.fromJson(Files.newBufferedReader(configPath), SmallDisplay[].class);
+    }
+    public static ServerDisplay[] loadFromLocalFile(ServerDisplay ignored) throws IOException {
+        configPath.resolve(config.displayUrls.server.substring(7));
+        return gson.fromJson(Files.newBufferedReader(configPath), ServerDisplay[].class);
+    }
+
+        private static boolean isUseJSON(String str){
         if(str.endsWith(".json"))
             return true;
         else
