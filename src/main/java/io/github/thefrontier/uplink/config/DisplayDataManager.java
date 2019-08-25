@@ -7,9 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -23,39 +21,35 @@ public class DisplayDataManager {
     public DisplayDataManager(Logger logger, Config config) throws Exception {
         ServerDisplay[] serverArr = new ServerDisplay[0];
         SmallDisplay[] smallArr = new SmallDisplay[0];
-        boolean hasErrors = false;
-        new LoadingUtils(INSTANCE.configDir.resolve("Uplink/"), config);
+        new LoadingUtils(INSTANCE.configDir.resolve("Uplink\\"), config, logger);
 
-        if(LoadingUtils.isUsingWeb()) {
-            logger.debug("Config uses HTTP(S) => Using webChannel");
             try {
-                List<URL> urls = LoadingUtils.genURLs(config, logger);
-                smallArr = LoadingUtils.loadFromWeb(new SmallDisplay(), urls.get(0));
-                serverArr = LoadingUtils.loadFromWeb(new ServerDisplay(), urls.get(1));
+                serverArr = LoadingUtils.load(new ServerDisplay(), config);
 
-                logger.trace("Received Small Data: " + Arrays.toString(smallArr));
-                logger.trace("Received Server Data: " + Arrays.toString(serverArr));
             } catch (MalformedURLException e) {
-                logger.error("URL is broken => Using default");
-                hasErrors = true;
-            }
-        }else if(LoadingUtils.isUsingFile()){
-            try {
-                smallArr = LoadingUtils.loadFromLocalFile(new SmallDisplay());
-                serverArr = LoadingUtils.loadFromLocalFile(new ServerDisplay());
+                logger.error("[ServerDisplay] URL is broken => Using default");
             }catch (IOException e) {
-                logger.error("Load from local File is not working => Using default");
-                hasErrors = true;
+                logger.error(e);
+                logger.error("[ServerDisplay] Load from local File is not working => Using default");
             }
-        }else
-        {
-            logger.error("Config dont uses HTTP(S) => Using default");
-            hasErrors = true;
+
+            try {
+                smallArr = LoadingUtils.load(new SmallDisplay(), config);
+
+            } catch (MalformedURLException e) {
+                logger.error("[SmallDisplay] URL is broken => Using default");
+            }catch (IOException e) {
+                logger.error(e);
+                logger.error("[SmallDisplay] Load from local File is not working => Using default");
+            }
+
+        if(smallArr == null){
+            smallArr =  LoadingUtils.loadFromDefault(new SmallDisplay());
         }
-        if(hasErrors){
-            smallArr =  LoadingUtils.loadFromLocal(new SmallDisplay());
-            serverArr = LoadingUtils.loadFromLocal(new ServerDisplay());
+        if(serverArr == null){
+            serverArr = LoadingUtils.loadFromDefault(new ServerDisplay());
         }
+
         this.smallDisplays = Arrays.stream(smallArr)
                 .collect(Collectors.toMap(SmallDisplay::getUid, SmallDisplay::self));
         this.serverDisplays = Arrays.stream(serverArr)

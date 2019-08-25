@@ -12,8 +12,6 @@ public class Config {
 
     public static class DisplayUrls {
 
-        public String gui;
-
         public String server;
 
         public String small;
