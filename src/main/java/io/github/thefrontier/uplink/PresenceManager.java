@@ -1,12 +1,12 @@
 package io.github.thefrontier.uplink;
 
 import club.minnced.discord.rpc.DiscordRichPresence;
-import cpw.mods.fml.common.Loader;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
 import io.github.thefrontier.uplink.config.display.SmallDisplay;
 import io.github.thefrontier.uplink.util.MiscUtil;
+import net.minecraftforge.fml.common.Loader;
 
 
 class PresenceManager {

@@ -1,9 +1,6 @@
 package io.github.thefrontier.uplink;
 
 import club.minnced.discord.rpc.DiscordRPC;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -11,6 +8,9 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.Logger;
 
 public class PresenceListener {
@@ -40,8 +40,8 @@ public class PresenceListener {
             curTick = 0;
 
             try {
-                int playerCount = Minecraft.getMinecraft().getNetHandler().playerInfoList.size();
-                int maxPlayers = Minecraft.getMinecraft().getNetHandler().currentServerMaxPlayers;
+                int playerCount = Minecraft.getMinecraft().getConnection().getPlayerInfoMap().size();
+                int maxPlayers = Minecraft.getMinecraft().getConnection().currentServerMaxPlayers;
 
                 if (this.curPlayerCount != playerCount) {
                     rpc.Discord_UpdatePresence(presenceManager.updatePlayerCount(playerCount, maxPlayers));
@@ -56,7 +56,7 @@ public class PresenceListener {
 
     @SubscribeEvent
     public void onMainMenu(GuiOpenEvent event) {
-        if (event.gui instanceof GuiMainMenu && presenceManager.getCurState() != PresenceState.MENU_MAIN) {
+        if (event.getGui() instanceof GuiMainMenu && presenceManager.getCurState() != PresenceState.MENU_MAIN) {
             presenceManager.setCurState(PresenceState.MENU_MAIN);
             rpc.Discord_UpdatePresence(presenceManager.mainMenu());
         }
@@ -64,7 +64,7 @@ public class PresenceListener {
 
     @SubscribeEvent
     public void onJoin(EntityJoinWorldEvent event) {
-        if (!(event.entity instanceof EntityPlayerMP || event.entity instanceof EntityPlayerSP)) {
+        if (!(event.getEntity() instanceof EntityPlayerMP || event.getEntity() instanceof EntityPlayerSP)) {
             // Ignore non-players.
             return;
         }
@@ -79,7 +79,7 @@ public class PresenceListener {
 
             rpc.Discord_UpdatePresence(presenceManager.ingameMP(curServer.serverIP, 0, 0));
         } else {
-            rpc.Discord_UpdatePresence(presenceManager.ingameSP(event.world.getWorldInfo().getWorldName()));
+            rpc.Discord_UpdatePresence(presenceManager.ingameSP(event.getWorld().getWorldInfo().getWorldName()));
         }
 
         presenceManager.setCurState(PresenceState.INGAME);
