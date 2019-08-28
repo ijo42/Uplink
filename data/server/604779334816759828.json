@@ -5,6 +5,11 @@
     "name": "Cascade Server"
   },
   {
+    "uid": "mc.ijo42.online:25565",
+    "key": "server-cascade",
+    "name": "Cascade Server"
+  },
+  {
     "uid": "localhost",
     "key": "server-localhost",
     "name": "Local Server"
