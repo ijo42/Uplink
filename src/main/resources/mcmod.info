@@ -5,9 +5,10 @@
     "description": "Adds Discord Rich Presence to Minecraft!",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "",
+    "url": "https://curseforge.com/minecraft/mc-mods/uplink",
     "updateUrl": "",
     "authorList": [
+      "ijo42",
       "DotDash"
     ],
     "credits": "",
