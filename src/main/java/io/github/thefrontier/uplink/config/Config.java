@@ -15,5 +15,7 @@ public class Config {
         public String server;
 
         public String small;
+
+        public String gui;
     }
 }

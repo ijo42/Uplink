@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
+import io.github.thefrontier.uplink.util.MiscUtil;
 import io.github.thefrontier.uplink.util.NativeUtil;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -55,7 +56,7 @@ public class Uplink {
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         configDir = event.getModConfigurationDirectory().toPath();
-        PresenceManager manager = setupPresenceManager(event.getModConfigurationDirectory().toPath().resolve("Uplink.json"));
+        PresenceManager manager = setupPresenceManager(configDir.resolve("Uplink.json"));
 
         if (hasErrors) {
             return;
@@ -89,7 +90,9 @@ public class Uplink {
         Config config;
 
         try {
-            config = gson.fromJson(Files.newBufferedReader(configPath), Config.class);
+            config = MiscUtil.verifyConfig(
+                    gson.fromJson(Files.newBufferedReader(configPath), Config.class)
+            );
         } catch (Exception e) {
             LOGGER.error("Could not load config", e);
             hasErrors = true;
