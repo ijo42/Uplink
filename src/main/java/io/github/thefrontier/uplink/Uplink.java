@@ -69,8 +69,7 @@ public class Uplink {
 
         PresenceListener listener = new PresenceListener(RPC, LOGGER, manager);
 
-        MinecraftForge.EVENT_BUS.register(listener);
-        FMLCommonHandler.instance().bus().register(listener);
+        MinecraftForge.EVENT_BUS.register(new PresenceListener(RPC, manager));
     }
 
     private PresenceManager setupPresenceManager(Path configPath) {
