@@ -1,5 +1,6 @@
 package io.github.thefrontier.uplink.config;
 
+import io.github.thefrontier.uplink.config.display.GUIDisplay;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
 import io.github.thefrontier.uplink.config.display.SmallDisplay;
 import io.github.thefrontier.uplink.util.LoadingUtils;
@@ -17,11 +18,12 @@ public class DisplayDataManager {
 
     private Map<String, SmallDisplay> smallDisplays;
     private Map<String, ServerDisplay> serverDisplays;
+    private GUIDisplay guiDisplay;
 
     public DisplayDataManager(Logger logger, Config config) throws Exception {
         ServerDisplay[] serverArr = new ServerDisplay[0];
         SmallDisplay[] smallArr = new SmallDisplay[0];
-        new LoadingUtils(INSTANCE.configDir.resolve("Uplink\\"), config, logger);
+        new LoadingUtils(INSTANCE.configDir.resolve("Uplink\\"), logger);
 
             try {
                 serverArr = LoadingUtils.load(new ServerDisplay(), config);
@@ -43,11 +45,24 @@ public class DisplayDataManager {
                 logger.error("[SmallDisplay] Load from local File is not working => Using default");
             }
 
+            try {
+                guiDisplay = LoadingUtils.load(new GUIDisplay(), config);
+
+            } catch (MalformedURLException e) {
+                logger.error("[GUIDisplay] URL is broken => Using default");
+            }catch (IOException e) {
+                logger.error(e);
+                logger.error("[GUIDisplay] Load from local File is not working => Using default");
+            }
+
         if(smallArr == null){
             smallArr =  LoadingUtils.loadFromDefault(new SmallDisplay());
         }
         if(serverArr == null){
             serverArr = LoadingUtils.loadFromDefault(new ServerDisplay());
+        }
+        if(guiDisplay == null){
+            guiDisplay = LoadingUtils.loadFromDefault(new GUIDisplay());
         }
 
         this.smallDisplays = Arrays.stream(smallArr)
@@ -65,5 +80,9 @@ public class DisplayDataManager {
 
     public Map<String, ServerDisplay> getServerDisplays() {
         return serverDisplays;
+    }
+
+    public GUIDisplay getGUIDisplay() {
+        return guiDisplay;
     }
 }
