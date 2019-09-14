@@ -92,17 +92,17 @@ class PresenceManager {
 
         if (server != null) {
             inGame.largeImageKey = server.getKey();
-            inGame.largeImageText = "IP: " + server.getName();
+            inGame.largeImageText = String.format("IP: %s", server.getName());
         } else if (this.config.hideUnknownIPs) {
             inGame.largeImageKey = "state-unknown-server";
             inGame.largeImageText = "Unknown Server";
         } else {
             inGame.largeImageKey = "state-unknown-server";
-            inGame.largeImageText = "IP: " + ip;
+            inGame.largeImageText = String.format("IP: %s", ip);
         }
 
         inGame.state = "Playing with friends <3";
-        inGame.details = "IGN: " + MiscUtil.getIGN();
+        inGame.details = String.format("IGN: %s", MiscUtil.getIGN());
         inGame.startTimestamp = startTime;
         inGame.partyId = ip;
         inGame.partySize = playerCount;
@@ -120,10 +120,10 @@ class PresenceManager {
 
     DiscordRichPresence ingameSP(String world) {
         inGame.state = "Lonely play..";
-        inGame.details = "IGN: " + MiscUtil.getIGN();
+        inGame.details = String.format("IGN: %s", MiscUtil.getIGN());
         inGame.startTimestamp = startTime;
         inGame.largeImageKey = "state-singleplayer";
-        inGame.largeImageText = "World: " + world;
+        inGame.largeImageText = String.format("World: %s", world);
         inGame.partyId = "";
         inGame.partySize = 0;
         inGame.partyMax = 0;
