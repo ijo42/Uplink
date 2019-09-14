@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
+import io.github.thefrontier.uplink.util.MiscUtil;
 import io.github.thefrontier.uplink.util.NativeUtil;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
@@ -88,6 +89,7 @@ public class Uplink {
 
         try {
             config = gson.fromJson(Files.newBufferedReader(configPath), Config.class);
+            config = MiscUtil.verifyConfig(config);
         } catch (Exception e) {
             LOGGER.error("Could not load config", e);
             hasErrors = true;
