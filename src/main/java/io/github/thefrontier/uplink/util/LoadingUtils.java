@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import io.github.thefrontier.uplink.Uplink;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
+import io.github.thefrontier.uplink.config.display.GUIDisplay;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
 import io.github.thefrontier.uplink.config.display.SmallDisplay;
 import org.apache.logging.log4j.Logger;
@@ -22,40 +23,51 @@ public class LoadingUtils {
 
     private static final Gson gson = new GsonBuilder().create();
     private static Path configPath;
-    private static Config config;
     private static Logger logger;
 
-    public LoadingUtils(Path configPath, Config config, Logger logger) {
+    public LoadingUtils(Path configPath, Logger logger) {
         LoadingUtils.configPath = configPath;
-        LoadingUtils.config = config;
         LoadingUtils.logger = logger;
     }
 
     public static ServerDisplay[] load(ServerDisplay ignored, Config config) throws IOException {
         if(isUsingWeb(config.displayUrls.server)){
-            logger.debug("Config uses HTTP(S) => Using webChannel");
+            logger.info("[ServerDisplay] Config uses HTTP(S) => Using webChannel");
             return loadFromWeb(new ServerDisplay(), new URL(isUseJSON(config.displayUrls.server)? config.displayUrls.server :
                     config.displayUrls.server + config.clientId + ".json"));
 
         }else if(isUsingFile(config.displayUrls.server)){
-            logger.debug("Config uses FILE => Using fileChannel");
+            logger.info("[ServerDisplay] Config uses FILE => Using fileChannel");
             return loadFromLocalFile(new ServerDisplay(), config.displayUrls.server);
         }else{
-            logger.error("Config dont uses HTTP(S) / FILE => Using default");
+            logger.error("[ServerDisplay] Config dont uses HTTP(S) / FILE => Using default");
             return null;
         }
     }
     public static SmallDisplay[] load(SmallDisplay ignored, Config config) throws IOException {
         if(isUsingWeb(config.displayUrls.small)){
-            logger.debug("Config uses HTTP(S) => Using webChannel");
+            logger.info("[SmallDisplay] Config uses HTTP(S) => Using webChannel");
             return loadFromWeb(new SmallDisplay(), new URL(isUseJSON(config.displayUrls.small)? config.displayUrls.small :
                     config.displayUrls.small + config.clientId + ".json"));
 
         }else if(isUsingFile(config.displayUrls.small)){
-            logger.debug("Config uses FILE => Using fileChannel");
+            logger.info("[SmallDisplay] Config uses FILE => Using fileChannel");
             return loadFromLocalFile(new SmallDisplay(), config.displayUrls.small);
         }else{
-            logger.error("Config dont uses HTTP(S) / FILE => Using default");
+            logger.error("[SmallDisplay] Config dont uses HTTP(S) / FILE => Using default");
+            return null;
+        }
+    }
+    public static GUIDisplay load(GUIDisplay ignored, Config config) throws IOException {
+        if(isUsingWeb(config.displayUrls.gui) && isUseJSON(config.displayUrls.gui)){
+            logger.info("[GUIDisplay] Config uses HTTP(S) => Using webChannel");
+            return loadFromWeb(new GUIDisplay(), new URL(config.displayUrls.gui));
+
+        }else if(isUsingFile(config.displayUrls.gui)){
+            logger.info("[GUIDisplay] Config uses FILE => Using fileChannel");
+            return loadFromLocalFile(new GUIDisplay(), config.displayUrls.gui);
+        }else{
+            logger.error("[GUIDisplay] Config dont uses HTTP(S) / FILE => Using default");
             return null;
         }
     }
@@ -66,12 +78,18 @@ public class LoadingUtils {
     public static ServerDisplay[] loadFromWeb(ServerDisplay ignored, URL url) throws IOException {
         return gson.fromJson(new InputStreamReader(url.openStream()), ServerDisplay[].class);
     }
+    public static GUIDisplay loadFromWeb(GUIDisplay ignored, URL url) throws IOException {
+        return gson.fromJson(new InputStreamReader(url.openStream()), GUIDisplay.class);
+    }
 
     public static SmallDisplay[] loadFromDefault(SmallDisplay ignored) throws IOException {
         return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Smalls.json")), SmallDisplay[].class);
     }
     public static ServerDisplay[] loadFromDefault(ServerDisplay ignored) throws IOException {
         return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Servers.json")), ServerDisplay[].class);
+    }
+    public static GUIDisplay loadFromDefault(GUIDisplay ignored) throws IOException {
+        return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("GUI.json")), GUIDisplay.class);
     }
 
     public static SmallDisplay[] loadFromLocalFile(SmallDisplay ignored, String configName) throws IOException {
@@ -82,6 +100,10 @@ public class LoadingUtils {
     public static ServerDisplay[] loadFromLocalFile(ServerDisplay ignored, String configName) throws IOException {
         Path configPath = LoadingUtils.configPath.resolve(configName.substring(7));
         return gson.fromJson(Files.newBufferedReader(configPath), ServerDisplay[].class);
+    }
+    public static GUIDisplay loadFromLocalFile(GUIDisplay ignored, String configName) throws IOException {
+        Path configPath = LoadingUtils.configPath.resolve(configName.substring(7));
+        return gson.fromJson(Files.newBufferedReader(configPath), GUIDisplay.class);
     }
 
     private static boolean isUseJSON(String str){

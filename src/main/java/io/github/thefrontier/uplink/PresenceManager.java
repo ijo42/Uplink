@@ -3,6 +3,7 @@ package io.github.thefrontier.uplink;
 import club.minnced.discord.rpc.DiscordRichPresence;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
+import io.github.thefrontier.uplink.config.display.GUIDisplay;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
 import io.github.thefrontier.uplink.config.display.SmallDisplay;
 import io.github.thefrontier.uplink.util.MiscUtil;
@@ -30,13 +31,13 @@ class PresenceManager {
         this.dataManager = dataManager;
         this.config = config;
 
-        loadingGame.state = "Loading the Game";
+        loadingGame.state = dataManager.getGUIDisplay().loadingGame.state;
         loadingGame.largeImageKey = "state-load";
-        loadingGame.largeImageText = "Minecraft";
+        loadingGame.largeImageText = dataManager.getGUIDisplay().loadingGame.largeImageText;
 
-        mainMenu.state = "In the Main Menu";
+        mainMenu.state = dataManager.getGUIDisplay().mainMenu.state;
         mainMenu.largeImageKey = "state-menu";
-        mainMenu.largeImageText = "Main Menu";
+        mainMenu.largeImageText = dataManager.getGUIDisplay().mainMenu.largeImageText;
 
         SmallDisplay smallData = dataManager.getSmallDisplays().get(this.config.smallDataUid);
 
@@ -77,7 +78,7 @@ class PresenceManager {
     DiscordRichPresence loadingGame() {
         int mods = (int) Loader.instance().getModList().stream().count();
         loadingGame.startTimestamp = startTime;
-        loadingGame.details = String.format("With %d mods", mods);
+        loadingGame.details = String.format(dataManager.getGUIDisplay().loadingGame.details, mods);
         return loadingGame;
     }
 
@@ -92,17 +93,17 @@ class PresenceManager {
 
         if (server != null) {
             inGame.largeImageKey = server.getKey();
-            inGame.largeImageText = "IP: " + server.getName();
+            inGame.largeImageText = String.format(dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.ip, server.getName());
         } else if (this.config.hideUnknownIPs) {
             inGame.largeImageKey = "state-unknown-server";
-            inGame.largeImageText = "Unknown Server";
+            inGame.largeImageText = dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.unknown;
         } else {
             inGame.largeImageKey = "state-unknown-server";
-            inGame.largeImageText = "IP: " + ip;
+            inGame.largeImageText = String.format(dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.ip, ip);
         }
 
-        inGame.state = "Playing with friends <3";
-        inGame.details = "IGN: " + MiscUtil.getIGN();
+        inGame.state = dataManager.getGUIDisplay().inGame.multiPlayer.state;
+        inGame.details = String.format(dataManager.getGUIDisplay().inGame.multiPlayer.details, MiscUtil.getIGN());
         inGame.startTimestamp = startTime;
         inGame.partyId = ip;
         inGame.partySize = playerCount;
@@ -119,11 +120,11 @@ class PresenceManager {
     }
 
     DiscordRichPresence ingameSP(String world) {
-        inGame.state = "Lonely play..";
-        inGame.details = "IGN: " + MiscUtil.getIGN();
+        inGame.state = dataManager.getGUIDisplay().inGame.singlePlayer.state;
+        inGame.details = String.format(dataManager.getGUIDisplay().inGame.singlePlayer.details, MiscUtil.getIGN());
         inGame.startTimestamp = startTime;
         inGame.largeImageKey = "state-singleplayer";
-        inGame.largeImageText = "World: " + world;
+        inGame.largeImageText = String.format(dataManager.getGUIDisplay().inGame.singlePlayer.largeImageText, world);
         inGame.partyId = "";
         inGame.partySize = 0;
         inGame.partyMax = 0;
