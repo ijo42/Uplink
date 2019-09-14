@@ -32,42 +32,42 @@ public class LoadingUtils {
 
     public static ServerDisplay[] load(ServerDisplay ignored, Config config) throws IOException {
         if(isUsingWeb(config.displayUrls.server)){
-            logger.debug("Config uses HTTP(S) => Using webChannel");
+            logger.info("[ServerDisplay] Config uses HTTP(S) => Using webChannel");
             return loadFromWeb(new ServerDisplay(), new URL(isUseJSON(config.displayUrls.server)? config.displayUrls.server :
                     config.displayUrls.server + config.clientId + ".json"));
 
         }else if(isUsingFile(config.displayUrls.server)){
-            logger.debug("Config uses FILE => Using fileChannel");
+            logger.info("[ServerDisplay] Config uses FILE => Using fileChannel");
             return loadFromLocalFile(new ServerDisplay(), config.displayUrls.server);
         }else{
-            logger.error("Config dont uses HTTP(S) / FILE => Using default");
+            logger.error("[ServerDisplay] Config dont uses HTTP(S) / FILE => Using default");
             return null;
         }
     }
     public static SmallDisplay[] load(SmallDisplay ignored, Config config) throws IOException {
         if(isUsingWeb(config.displayUrls.small)){
-            logger.debug("Config uses HTTP(S) => Using webChannel");
+            logger.info("[SmallDisplay] Config uses HTTP(S) => Using webChannel");
             return loadFromWeb(new SmallDisplay(), new URL(isUseJSON(config.displayUrls.small)? config.displayUrls.small :
                     config.displayUrls.small + config.clientId + ".json"));
 
         }else if(isUsingFile(config.displayUrls.small)){
-            logger.debug("Config uses FILE => Using fileChannel");
+            logger.info("[SmallDisplay] Config uses FILE => Using fileChannel");
             return loadFromLocalFile(new SmallDisplay(), config.displayUrls.small);
         }else{
-            logger.error("Config dont uses HTTP(S) / FILE => Using default");
+            logger.error("[SmallDisplay] Config dont uses HTTP(S) / FILE => Using default");
             return null;
         }
     }
     public static GUIDisplay load(GUIDisplay ignored, Config config) throws IOException {
         if(isUsingWeb(config.displayUrls.gui) && isUseJSON(config.displayUrls.gui)){
-            logger.debug("Config uses HTTP(S) => Using webChannel");
+            logger.info("[GUIDisplay] Config uses HTTP(S) => Using webChannel");
             return loadFromWeb(new GUIDisplay(), new URL(config.displayUrls.gui));
 
         }else if(isUsingFile(config.displayUrls.gui)){
-            logger.debug("Config uses FILE => Using fileChannel");
+            logger.info("[GUIDisplay] Config uses FILE => Using fileChannel");
             return loadFromLocalFile(new GUIDisplay(), config.displayUrls.gui);
         }else{
-            logger.error("Config dont uses HTTP(S) / FILE => Using default");
+            logger.error("[GUIDisplay] Config dont uses HTTP(S) / FILE => Using default");
             return null;
         }
     }
