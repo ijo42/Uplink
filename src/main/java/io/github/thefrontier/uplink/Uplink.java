@@ -54,7 +54,7 @@ public class Uplink {
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         configDir = event.getModConfigurationDirectory().toPath();
-        PresenceManager manager = setupPresenceManager(event.getModConfigurationDirectory().toPath().resolve("Uplink.json"));
+        PresenceManager manager = setupPresenceManager(configDir.resolve("Uplink.json"));
 
         if (hasErrors) {
             return;
@@ -88,8 +88,9 @@ public class Uplink {
         Config config;
 
         try {
-            config = gson.fromJson(Files.newBufferedReader(configPath), Config.class);
-            config = MiscUtil.verifyConfig(config);
+            config = MiscUtil.verifyConfig(
+                    gson.fromJson(Files.newBufferedReader(configPath), Config.class)
+            );
         } catch (Exception e) {
             LOGGER.error("Could not load config", e);
             hasErrors = true;
