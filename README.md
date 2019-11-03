@@ -1,6 +1,6 @@
 # Uplink
 
-Uplink is a MinecraftForge mod that adds Discord Rich Presence integration to Minecraft, to show your current username, server, and server player count!
+Uplink is a Minecraft mod that adds Discord Rich Presence integration to Minecraft, to show your current username, server, and server player count!
 
 If you are not seeing anything, it's because Uplink is broken up by git branch.
 
@@ -10,3 +10,5 @@ If you are not seeing anything, it's because Uplink is broken up by git branch.
 - [1.12.2 branch](https://github.com/ijo42/Uplink/tree/mod-1.12)
 
 So, thats mod is a fork [Original mod](https://github.com/TheFrontier/Uplink)
+
+_If you want to find help go to [wiki](https://github.com/ijo42/Uplink/wiki) or write [me](https://ijo42.ru)_
