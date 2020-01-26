@@ -1,0 +1,26 @@
+{
+  "mainMenu": {
+    "state": "В главном меню",
+    "largeImageText": "Главное меню"
+  },
+  "loadingGame": {
+    "state": "Загрузка...",
+    "largeImageText": "Minecraft",
+    "details": "С %d модов"
+  },
+  "inGame": {
+    "multiPlayer": {
+      "largeImageText": {
+        "unknown": "Неизвестный сервер",
+        "ip": "IP: %s"
+      },
+      "state": "OpenTech \u003c3",
+      "details": "Ник: %s"
+    },
+    "singlePlayer": {
+      "state": "В полном одиночестве..",
+      "largeImageText": "Мир: %s",
+      "details": "Ник: %s"
+    }
+  }
+}
