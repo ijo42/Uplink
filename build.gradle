@@ -87,4 +87,6 @@ task signJar(type: SignJar, dependsOn: reobfJar) {
 	keyPass="someTrue"
 }
 
+compileJava.options.encoding = 'UTF-8'
+
 build.dependsOn signJar
