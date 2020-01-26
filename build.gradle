@@ -85,4 +85,6 @@ jar {
 
 jar.archiveName = "${modBaseName}-${project.minecraft.version}-${project.version}-mod.jar"
 
+compileJava.options.encoding = 'UTF-8'
+
 build.dependsOn
