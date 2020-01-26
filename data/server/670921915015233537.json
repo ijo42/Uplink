@@ -1,0 +1,22 @@
+[
+  {
+    "uid": "188.246.224.216:25566",
+    "key": "server-opentech",
+    "name": "Open Tech №1"
+  },
+  {
+    "uid": "localhost",
+    "key": "server-localhost",
+    "name": "Local Server"
+  },  
+  {
+    "uid": "127.0.0.1",
+    "key": "server-localhost",
+    "name": "Local Server"
+  },
+  {
+    "uid": "0.0.0.0",
+    "key": "server-localhost",
+    "name": "Local Server"
+  }
+]
