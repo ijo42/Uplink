@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Files;
@@ -30,7 +29,7 @@ public class Uplink {
     public static final String MOD_NAME = "Uplink";
     public static final String VERSION = "@MCVERSION@";
     public static final String fingerPrint = "1f65d37574f980a4ef0a9e298690765308152c20";
-    public static final Logger LOGGER = LogManager.getLogger("Uplink");
+    public static Logger LOGGER;
 
     @Mod.Instance(MOD_ID)
     public static Uplink INSTANCE;
@@ -55,6 +54,7 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
+        LOGGER = event.getModLog();
         configDir = event.getModConfigurationDirectory().toPath();
         PresenceManager manager = setupPresenceManager(configDir.resolve("Uplink.json"));
 
@@ -68,10 +68,9 @@ public class Uplink {
             return;
         }
 
-        PresenceListener listener = new PresenceListener(RPC, LOGGER, manager);
+        PresenceListener listener = new PresenceListener(RPC, manager);
 
         MinecraftForge.EVENT_BUS.register(listener);
-        FMLCommonHandler.instance().bus().register(listener);
     }
 
     private PresenceManager setupPresenceManager(Path configPath) {
@@ -81,7 +80,6 @@ public class Uplink {
             } catch (Exception e) {
                 LOGGER.error("Could not copy default config to " + configPath, e);
                 hasErrors = true;
-                return null;
             }
         }
 
@@ -95,21 +93,15 @@ public class Uplink {
             );
         } catch (Exception e) {
             LOGGER.error("Could not load config", e);
+            config = null;
             hasErrors = true;
-            return null;
         }
 
-        DisplayDataManager dataManager;
+        DisplayDataManager dataManager = new DisplayDataManager(LOGGER, config);
 
-        try {
-            dataManager = new DisplayDataManager(LOGGER, config);
-        } catch (Exception e) {
-            LOGGER.error("Could not load display data manager", e);
-            hasErrors = true;
-            return null;
-        }
+        PresenceManager presenceManager = new PresenceManager(dataManager, config);
 
-        return new PresenceManager(dataManager, config);
+        return presenceManager;
     }
 
     private void setupRichPresence(PresenceManager manager) {
@@ -134,7 +126,6 @@ public class Uplink {
     
     @Mod.EventHandler
     public void onFingerprintViolation (FMLFingerprintViolationEvent event) {
-
         LOGGER.error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 }
