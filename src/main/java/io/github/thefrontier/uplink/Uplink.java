@@ -4,7 +4,6 @@ import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -69,7 +68,6 @@ public class Uplink {
         PresenceListener listener = new PresenceListener(RPC, LOGGER, manager);
 
         MinecraftForge.EVENT_BUS.register(listener);
-        FMLCommonHandler.instance().bus().register(listener);
     }
 
     private PresenceManager setupPresenceManager(Path configPath) {
@@ -79,7 +77,6 @@ public class Uplink {
             } catch (Exception e) {
                 LOGGER.error("Could not copy default config to " + configPath, e);
                 hasErrors = true;
-                return null;
             }
         }
 
@@ -93,21 +90,15 @@ public class Uplink {
             );
         } catch (Exception e) {
             LOGGER.error("Could not load config", e);
+            config = null;
             hasErrors = true;
-            return null;
         }
 
-        DisplayDataManager dataManager;
+        DisplayDataManager dataManager = new DisplayDataManager(LOGGER, config);
 
-        try {
-            dataManager = new DisplayDataManager(LOGGER, config);
-        } catch (Exception e) {
-            LOGGER.error("Could not load display data manager", e);
-            hasErrors = true;
-            return null;
-        }
+        PresenceManager presenceManager = new PresenceManager(dataManager, config);
 
-        return new PresenceManager(dataManager, config);
+        return presenceManager;
     }
 
     private void setupRichPresence(PresenceManager manager) {

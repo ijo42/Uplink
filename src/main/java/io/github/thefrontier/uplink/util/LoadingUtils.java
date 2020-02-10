@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.thefrontier.uplink.Uplink;
 import io.github.thefrontier.uplink.config.Config;
-import io.github.thefrontier.uplink.config.DisplayDataManager;
 import io.github.thefrontier.uplink.config.display.GUIDisplay;
 import io.github.thefrontier.uplink.config.display.ServerDisplay;
 import io.github.thefrontier.uplink.config.display.SmallDisplay;
@@ -12,13 +11,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoadingUtils {
 
@@ -83,13 +79,13 @@ public class LoadingUtils {
         return gson.fromJson(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8), GUIDisplay.class);
     }
 
-    public static SmallDisplay[] loadFromDefault(SmallDisplay ignored) throws IOException {
+    public static SmallDisplay[] loadFromDefault(SmallDisplay ignored) {
         return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Smalls.json")), SmallDisplay[].class);
     }
-    public static ServerDisplay[] loadFromDefault(ServerDisplay ignored) throws IOException {
+    public static ServerDisplay[] loadFromDefault(ServerDisplay ignored) {
         return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("Servers.json")), ServerDisplay[].class);
     }
-    public static GUIDisplay loadFromDefault(GUIDisplay ignored) throws IOException {
+    public static GUIDisplay loadFromDefault(GUIDisplay ignored) {
         return gson.fromJson(new InputStreamReader(Uplink.class.getResourceAsStream("GUI.json")), GUIDisplay.class);
     }
 
