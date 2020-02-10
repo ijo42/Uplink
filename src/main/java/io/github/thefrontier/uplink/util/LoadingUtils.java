@@ -104,22 +104,13 @@ public class LoadingUtils {
     }
 
     private static boolean isUseJSON(String str){
-        if(str.endsWith(".json"))
-            return true;
-        else
-            return false;
+        return str.endsWith(".json");
     }
     public static boolean isUsingFile(String str){
-        if(str.startsWith("file://"))
-            return true;
-        else
-            return false;
+        return str.startsWith("file://");
     }
     public static boolean isUsingWeb(String str){
-        if(str.startsWith("https") || str.startsWith("http"))
-            return true;
-        else
-            return false;
+        return str.startsWith("https") || str.startsWith("http");
     }
 
 }
