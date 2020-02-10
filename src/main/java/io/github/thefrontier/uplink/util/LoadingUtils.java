@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -73,13 +74,13 @@ public class LoadingUtils {
     }
 
     public static SmallDisplay[] loadFromWeb(SmallDisplay ignored, URL url) throws IOException {
-        return gson.fromJson(new InputStreamReader(url.openStream()), SmallDisplay[].class);
+        return gson.fromJson(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8), SmallDisplay[].class);
     }
     public static ServerDisplay[] loadFromWeb(ServerDisplay ignored, URL url) throws IOException {
-        return gson.fromJson(new InputStreamReader(url.openStream()), ServerDisplay[].class);
+        return gson.fromJson(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8), ServerDisplay[].class);
     }
     public static GUIDisplay loadFromWeb(GUIDisplay ignored, URL url) throws IOException {
-        return gson.fromJson(new InputStreamReader(url.openStream()), GUIDisplay.class);
+        return gson.fromJson(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8), GUIDisplay.class);
     }
 
     public static SmallDisplay[] loadFromDefault(SmallDisplay ignored) throws IOException {
