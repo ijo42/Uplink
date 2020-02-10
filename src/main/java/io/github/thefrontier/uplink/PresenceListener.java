@@ -11,20 +11,17 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import org.apache.logging.log4j.Logger;
 
 public class PresenceListener {
 
     private final DiscordRPC rpc;
-    private final Logger logger;
     private final PresenceManager presenceManager;
 
     private int curTick = 0;
     private int curPlayerCount = 0;
 
-    PresenceListener(DiscordRPC rpc, Logger logger, PresenceManager presenceManager) {
+    PresenceListener(DiscordRPC rpc, PresenceManager presenceManager) {
         this.rpc = rpc;
-        this.logger = logger;
         this.presenceManager = presenceManager;
     }
 
