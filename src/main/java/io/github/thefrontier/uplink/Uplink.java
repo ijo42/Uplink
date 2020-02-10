@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
+import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import io.github.thefrontier.uplink.config.Config;
 import io.github.thefrontier.uplink.config.DisplayDataManager;
@@ -119,5 +120,10 @@ public class Uplink {
         Runtime.getRuntime().addShutdownHook(new Thread(callbackHandler::interrupt));
 
         RPC.Discord_UpdatePresence(manager.loadingGame());
+    }
+
+    @Mod.EventHandler
+    public void onFingerprintViolation (FMLFingerprintViolationEvent event) {
+        LOGGER.error("Invalid fingerprint detected! The file " + event.source.getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 }
