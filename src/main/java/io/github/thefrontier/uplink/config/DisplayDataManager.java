@@ -20,7 +20,7 @@ public class DisplayDataManager {
     private Map<String, ServerDisplay> serverDisplays;
     private GUIDisplay guiDisplay;
 
-    public DisplayDataManager(Logger logger, Config config) throws Exception {
+    public DisplayDataManager(Logger logger, Config config) {
         ServerDisplay[] serverArr = new ServerDisplay[0];
         SmallDisplay[] smallArr = new SmallDisplay[0];
         new LoadingUtils(INSTANCE.configDir.resolve("Uplink\\"), logger);
