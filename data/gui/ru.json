@@ -14,7 +14,7 @@
         "unknown": "Неизвестный сервер",
         "ip": "IP: %s"
       },
-      "state": "OpenTech \u003c3",
+      "state": "Играет на сервере",
       "details": "Ник: %s"
     },
     "singlePlayer": {
