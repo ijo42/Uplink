@@ -1,8 +1,18 @@
 [
   {
-    "uid": "188.246.224.216:25566",
+    "uid": "node0.dirtcraft.pro:25566",
     "key": "server-opentech",
     "name": "Open Tech №1"
+  },  
+  {
+    "uid": "node0.dirtcraft.pro:25565",
+    "key": "server-darkarts",
+    "name": "Dark Arts №1"
+  },  
+  {
+    "uid": "node0.dirtcraft.pro",
+    "key": "server-darkarts",
+    "name": "Dark Arts №1"
   },
   {
     "uid": "localhost",
