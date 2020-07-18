@@ -13,6 +13,7 @@ import io.github.thefrontier.uplink.config.DisplayDataManager;
 import io.github.thefrontier.uplink.util.MiscUtil;
 import io.github.thefrontier.uplink.util.NativeUtil;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Files;
@@ -27,7 +28,7 @@ public class Uplink {
     public static final String MOD_ID = "uplink";
     public static final String MOD_NAME = "Uplink";
     public static final String VERSION = "@MCVERSION@";
-    public static Logger LOGGER;
+    public static final Logger LOGGER = LogManager.getLogger("Uplink");
 
     @Mod.Instance(MOD_ID)
     public static Uplink INSTANCE;
@@ -52,7 +53,6 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        LOGGER = event.getModLog();
         configDir = event.getModConfigurationDirectory().toPath();
         PresenceManager manager = setupPresenceManager(configDir.resolve("Uplink.json"));
 
