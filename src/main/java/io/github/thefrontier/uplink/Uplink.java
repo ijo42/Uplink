@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Files;
@@ -29,7 +30,7 @@ public class Uplink {
     public static final String MOD_NAME = "Uplink";
     public static final String VERSION = "@MCVERSION@";
     public static final String fingerPrint = "1f65d37574f980a4ef0a9e298690765308152c20";
-    public static Logger LOGGER;
+    public static final Logger LOGGER = LogManager.getLogger("Uplink");
 
     @Mod.Instance(MOD_ID)
     public static Uplink INSTANCE;
@@ -54,7 +55,6 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        LOGGER = event.getModLog();
         configDir = event.getModConfigurationDirectory().toPath();
         PresenceManager manager = setupPresenceManager(configDir.resolve("Uplink.json"));
 
@@ -68,7 +68,7 @@ public class Uplink {
             return;
         }
 
-        PresenceListener listener = new PresenceListener(RPC, manager);
+        PresenceListener listener = new PresenceListener(RPC, LOGGER, manager);
 
         MinecraftForge.EVENT_BUS.register(listener);
     }
