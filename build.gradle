@@ -1,96 +1,75 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-        maven {
-            name = "forge"
-            url = "https://files.minecraftforge.net/maven"
-        }
-    }
-    dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
-    }
+plugins {
+    id 'java'
+    id 'net.kyori.blossom' version "1.1.0" apply false
+    id "com.github.johnrengelman.shadow" version "5.2.0" apply false
 }
-
-apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: "java"
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
 
 version = modVersion
 group = modGroup
 archivesBaseName = modBaseName
 
-minecraft {
-    version = project.forgeVersion
-    runDir = "run"
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: "net.kyori.blossom"
+    apply plugin: "com.github.johnrengelman.shadow"
 
-    replace "@MCVERSION@", project.modVersion
-    replaceIn "Uplink.java"
-
-    mappings = project.mcpVersion
-}
-
-repositories {
-    mavenCentral()
-    jcenter()
-    maven { url 'https://jitpack.io/' }
-}
-
-configurations {
-    embed
-    compile.extendsFrom(embed)
-}
-
-dependencies {
-    embed 'club.minnced:java-discord-rpc:v2.0.1'
-    compile 'club.minnced:java-discord-rpc:v2.0.1'
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-
-        expand "version": project.version, "mcversion": project.minecraft.version
+    blossom {
+        replaceToken '@VERSION@', rootProject.getVersion()
     }
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+    version = rootProject.getVersion()
+    group = rootProject.getGroup()
+    archivesBaseName = rootProject.getArchivesBaseName()
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url 'https://jitpack.io/' }
+        maven {
+            name = "Forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
     }
+    configurations {
+        ship
+        compile.extendsFrom ship
+    }
+
+    dependencies {
+        compile 'club.minnced:java-discord-rpc:v2.0.1'
+    }
+
+    shadowJar {
+        classifier = ''
+        configurations = [project.configurations.ship]
+        from sourceSets.main.output
+    }
+
+    artifacts {
+        archives shadowJar
+    }
+
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title": rootProject.getName(),
+                    "Specification-Vendor": "ijo42",
+                    "Specification-Version": "1", // We are version 1 of ourselves
+                    "Implementation-Title": rootProject.getName(),
+                    "Implementation-Version": "${archiveVersion}",
+                    "Implementation-Vendor" :"ijo42",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        options.incremental = true // one flag, and things will get so MUCH faster
+    }
+    sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 }
-
-runClient {
-
-    args = ["--username=ijo42"]
-    jvmArgs "-Xmx1G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
-
-}
-
-runServer {
-
-    jvmArgs "-Xmx1G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
-
-}
-
-jar {
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
-}
-
-jar.archiveName = "${modBaseName}-${project.minecraft.version}-${project.version}-mod.jar"
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-    keyStore="fingerprint.jks"
-    alias="signFiles"
-    storePass="someTrue"
-    keyPass="someTrue"
-}
-
-compileJava.options.encoding = 'UTF-8'
-
-build.dependsOn signJar
+tasks.getByPath(':jar').enabled = false
+defaultTasks 'build'
