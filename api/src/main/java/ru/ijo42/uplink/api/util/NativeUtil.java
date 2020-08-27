@@ -13,7 +13,7 @@ public class NativeUtil {
     public static final File LINUX_64 = new File("uplink/linux_64/libdiscord-rpc.so");
     public static final File WINDOWS_64 = new File("uplink/windows_64/discord-rpc.dll");
     public static final File WINDOWS_32 = new File("uplink/windows_32/discord-rpc.dll");
-    public static final File OSX_64 = new File("uplink/osx_64/libdiscord-rpc.dylib");
+    public static final File OSX_64 = new File("uplink/darwin/libdiscord-rpc.dylib");
 
     public static void loadNativeLibrary() {
         Logger logger = UplinkAPI.getLogger();
