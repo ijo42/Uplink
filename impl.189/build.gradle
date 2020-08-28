@@ -1,22 +1,15 @@
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-    }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '2.1-SNAPSHOT'
     }
 }
-
-apply plugin: 'net.minecraftforge.gradle.forge'
 
 archivesBaseName += "-MC" + rootProject.minecraft_version189
 blossom {
     replaceToken '@MCVERSION@', rootProject.minecraft_version189
 }
+
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 minecraft {
     version = rootProject.minecraft_version189 + "-" + rootProject.forge_version189

@@ -1,9 +1,4 @@
 buildscript {
-    repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
-    }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
@@ -53,6 +48,7 @@ minecraft {
         }
     }
 }
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2854'
     ship project(':api')

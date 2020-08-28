@@ -9,6 +9,13 @@ group = modGroup
 archivesBaseName = modBaseName
 
 subprojects {
+    buildscript {
+        repositories {
+            maven { url = 'https://files.minecraftforge.net/maven' }
+            jcenter()
+            mavenCentral()
+        }
+    }
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: "net.kyori.blossom"
@@ -31,6 +38,7 @@ subprojects {
             url = "http://files.minecraftforge.net/maven"
         }
     }
+
     configurations {
         ship
         compile.extendsFrom ship
