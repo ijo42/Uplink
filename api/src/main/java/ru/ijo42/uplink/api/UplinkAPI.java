@@ -80,8 +80,8 @@ public class UplinkAPI {
                 @Override
                 public void onReady(IPCClient client) {
                     RPC.sendRichPresence(manager.initLoading());
-
                     presenceListener.init(RPC, manager);
+                    forgeImpl.afterInit(presenceListener);
                 }
             });
             RPC.connect();

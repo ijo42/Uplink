@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import ru.ijo42.uplink.api.ForgeAPI;
+import ru.ijo42.uplink.api.PresenceListener;
 import ru.ijo42.uplink.api.UplinkAPI;
 
 import java.nio.file.Path;
@@ -37,7 +38,7 @@ public class Uplink {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        PresenceListener listener = new PresenceListener();
+        PresenceListenerImpl listener = new PresenceListenerImpl();
         UplinkAPI.init(new ForgeAPI() {
             @Override
             public int getModsCount() {
@@ -78,8 +79,12 @@ public class Uplink {
             public String getWorldName() {
                 return Minecraft.getMinecraft().getIntegratedServer().getWorldName();
             }
+
+            @Override
+            public void afterInit(PresenceListener listener) {
+                MinecraftForge.EVENT_BUS.register(listener);
+            }
         }, event.getModLog(), listener);
-        MinecraftForge.EVENT_BUS.register(listener);
     }
 
     /**

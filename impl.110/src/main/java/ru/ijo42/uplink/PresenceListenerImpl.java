@@ -8,9 +8,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import ru.ijo42.uplink.api.PresenceListener;
 import ru.ijo42.uplink.api.PresenceState;
 
-public class PresenceListener extends ru.ijo42.uplink.api.PresenceListener {
+public class PresenceListenerImpl extends PresenceListener {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
@@ -19,14 +20,14 @@ public class PresenceListener extends ru.ijo42.uplink.api.PresenceListener {
 
     @SubscribeEvent
     public void onMainMenu(GuiOpenEvent event) {
-        if (event.gui instanceof GuiMainMenu && presenceManager.getCurState() != PresenceState.MENU_MAIN) {
+        if (event.getGui() instanceof GuiMainMenu && presenceManager.getCurState() != PresenceState.MENU_MAIN) {
             super.onMainMenu();
         }
     }
 
     @SubscribeEvent
     public void onJoin(EntityJoinWorldEvent event) {
-        if (event.entity instanceof EntityPlayerMP || event.entity instanceof EntityPlayerSP) {
+        if (event.getEntity() instanceof EntityPlayerMP || event.getEntity() instanceof EntityPlayerSP) {
             super.onJoin();
         }  // Ignore non-players.
     }
