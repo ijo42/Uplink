@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import ru.ijo42.uplink.api.ForgeAPI;
 import ru.ijo42.uplink.api.UplinkAPI;
-import ru.ijo42.uplink.api.util.NativeUtil;
 
 import java.nio.file.Path;
 
@@ -31,9 +30,6 @@ public class Uplink {
     @Mod.Instance(MOD_ID)
     public static Uplink INSTANCE;
 
-    static {
-        NativeUtil.loadNativeLibrary();
-    }
 
     /**
      * This is the first initialization event. Register tile entities here.
