@@ -32,6 +32,7 @@ subprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        jcenter()
         maven { url 'https://jitpack.io/' }
         maven {
             name = "Forge"

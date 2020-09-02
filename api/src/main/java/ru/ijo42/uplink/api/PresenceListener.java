@@ -1,15 +1,15 @@
 package ru.ijo42.uplink.api;
 
-import club.minnced.discord.rpc.DiscordRPC;
+import com.jagrosh.discordipc.IPCClient;
 
 public abstract class PresenceListener {
 
     protected PresenceManager presenceManager;
-    private DiscordRPC rpc;
+    private IPCClient rpc;
     private int curTick = 0;
     private int curPlayerCount = 0;
 
-    protected void init(DiscordRPC rpc, PresenceManager presenceManager) {
+    protected void init(IPCClient rpc, PresenceManager presenceManager) {
         this.rpc = rpc;
         this.presenceManager = presenceManager;
     }
@@ -28,7 +28,7 @@ public abstract class PresenceListener {
                 int maxPlayers = UplinkAPI.forgeImpl.getMaxPlayers();
 
                 if (this.curPlayerCount != playerCount) {
-                    rpc.Discord_UpdatePresence(presenceManager.updatePlayerCount(playerCount, maxPlayers));
+                    rpc.sendRichPresence(presenceManager.updatePlayerCount(playerCount, maxPlayers));
                     this.curPlayerCount = playerCount;
                 }
             } catch (NullPointerException ignored) {
@@ -40,7 +40,7 @@ public abstract class PresenceListener {
 
     public void onMainMenu() {
         presenceManager.setCurState(PresenceState.MENU_MAIN);
-        rpc.Discord_UpdatePresence(presenceManager.initMenu());
+        rpc.sendRichPresence(presenceManager.initMenu());
     }
 
     public void onJoin() {
@@ -50,16 +50,16 @@ public abstract class PresenceListener {
                 return;
             }
 
-            rpc.Discord_UpdatePresence(presenceManager.initMP(UplinkAPI.forgeImpl.getServerIP()));
+            rpc.sendRichPresence(presenceManager.initMP(UplinkAPI.forgeImpl.getServerIP()));
         } else {
-            rpc.Discord_UpdatePresence(presenceManager.initSP(UplinkAPI.forgeImpl.getWorldName()));
+            rpc.sendRichPresence(presenceManager.initSP(UplinkAPI.forgeImpl.getWorldName()));
         }
 
         presenceManager.setCurState(PresenceState.INGAME);
     }
 
     public void onClientDisconnect() {
-        rpc.Discord_UpdatePresence(presenceManager.initMenu());
+        rpc.sendRichPresence(presenceManager.initMenu());
         presenceManager.setCurState(PresenceState.MENU_MAIN);
     }
 }

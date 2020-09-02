@@ -1,9 +1,8 @@
 package ru.ijo42.uplink.api;
 
-import club.minnced.discord.rpc.DiscordEventHandlers;
-import club.minnced.discord.rpc.DiscordRPC;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jagrosh.discordipc.IPCClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ijo42.uplink.api.config.Config;
@@ -17,7 +16,7 @@ import java.nio.file.Path;
 public class UplinkAPI {
     public static ForgeAPI forgeImpl;
     private static Logger logger;
-    private static DiscordRPC RPC;
+    private static IPCClient RPC;
 
     public static Logger getLogger() {
         return logger == null ? LogManager.getLogger("Uplink") : logger;
@@ -26,7 +25,6 @@ public class UplinkAPI {
     public static void init(ForgeAPI forgeImpl, Logger logger, PresenceListener presenceListener) {
         UplinkAPI.forgeImpl = forgeImpl;
         UplinkAPI.logger = logger;
-        UplinkAPI.RPC = DiscordRPC.INSTANCE;
         setupPresenceManager(forgeImpl.getConfigDir().resolve("Uplink.json"), presenceListener);
     }
 
@@ -57,23 +55,24 @@ public class UplinkAPI {
 
         PresenceManager manager = new PresenceManager(dataManager, config);
 
-        RPC.Discord_Initialize(manager.getConfig().clientId, new DiscordEventHandlers(), false, null);
+        RPC = new IPCClient(Integer.parseInt(manager.getConfig().clientId));
 
         Thread callbackHandler = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                RPC.Discord_RunCallbacks();
+                RPC.getStatus();
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
-                    RPC.Discord_Shutdown();
+                    RPC.close();
                 }
             }
+            RPC.close();
         }, "RPC-Callback-Handler");
         callbackHandler.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(callbackHandler::interrupt));
 
-        RPC.Discord_UpdatePresence(manager.initLoading());
+        RPC.sendRichPresence(manager.initLoading());
 
         presenceListener.init(RPC, manager);
     }

@@ -1,38 +1,39 @@
 package ru.ijo42.uplink.api;
 
-import club.minnced.discord.rpc.DiscordRichPresence;
+import com.jagrosh.discordipc.entities.RichPresence;
 import ru.ijo42.uplink.api.config.Config;
 import ru.ijo42.uplink.api.config.display.ServerDisplay;
 import ru.ijo42.uplink.api.config.display.SmallDisplay;
 import ru.ijo42.uplink.api.util.DisplayDataManager;
-import ru.ijo42.uplink.api.util.MiscUtil;
+
+import java.time.OffsetDateTime;
 
 public class PresenceManager {
 
-    public static final long startTime;
+    public static final OffsetDateTime startTime;
 
     static {
-        startTime = MiscUtil.epochSecond();
+        startTime = OffsetDateTime.now();
     }
 
     private final DisplayDataManager dataManager;
     private final Config config;
-    private final DiscordRichPresence loadingGame = new DiscordRichPresence();
-    private final DiscordRichPresence mainMenu = new DiscordRichPresence();
-    private final DiscordRichPresence inGame = new DiscordRichPresence();
+    private final RichPresence.Builder loadingGame = new RichPresence.Builder();
+    private final RichPresence.Builder mainMenu = new RichPresence.Builder();
+    private final RichPresence.Builder inGame = new RichPresence.Builder();
     private PresenceState curState = PresenceState.INIT;
 
     public PresenceManager(DisplayDataManager dataManager, Config config) {
         this.dataManager = dataManager;
         this.config = config;
 
-        loadingGame.state = dataManager.getGUIDisplay().loadingGame.state;
-        loadingGame.largeImageKey = "state-load";
-        loadingGame.largeImageText = dataManager.getGUIDisplay().loadingGame.largeImageText;
+        loadingGame.setState(dataManager.getGUIDisplay().loadingGame.state);
+        loadingGame.setLargeImage("state-load",
+                dataManager.getGUIDisplay().loadingGame.largeImageText);
 
-        mainMenu.state = dataManager.getGUIDisplay().mainMenu.state;
-        mainMenu.largeImageKey = "state-menu";
-        mainMenu.largeImageText = dataManager.getGUIDisplay().mainMenu.largeImageText;
+        mainMenu.setState(dataManager.getGUIDisplay().mainMenu.state);
+        mainMenu.setLargeImage("state-menu",
+                dataManager.getGUIDisplay().mainMenu.largeImageText);
 
         SmallDisplay smallData = dataManager.getSmallDisplays().get(this.config.smallDataUid);
 
@@ -40,14 +41,14 @@ public class PresenceManager {
             return;
         }
 
-        loadingGame.smallImageKey = smallData.getKey();
-        loadingGame.smallImageText = smallData.getName();
+        loadingGame.setSmallImage(smallData.getKey(),
+                smallData.getName());
 
-        mainMenu.smallImageKey = smallData.getKey();
-        mainMenu.smallImageText = smallData.getName();
+        mainMenu.setSmallImage(smallData.getKey(),
+                smallData.getName());
 
-        inGame.smallImageKey = smallData.getKey();
-        inGame.smallImageText = smallData.getName();
+        inGame.setSmallImage(smallData.getKey(),
+                smallData.getName());
     }
 
     // ------------------- Getters -------------------- //
@@ -70,60 +71,54 @@ public class PresenceManager {
 
     // -------------------- Mutators -------------------- //
 
-    public DiscordRichPresence initLoading() {
+    public RichPresence initLoading() {
         int mods = UplinkAPI.forgeImpl.getModsCount();
-        loadingGame.startTimestamp = startTime;
-        loadingGame.details = String.format(dataManager.getGUIDisplay().loadingGame.details, mods);
-        return loadingGame;
+        loadingGame.setStartTimestamp(startTime);
+        loadingGame.setDetails(String.format(dataManager.getGUIDisplay().loadingGame.details, mods));
+        return loadingGame.build();
     }
 
-    public DiscordRichPresence initMenu() {
-        mainMenu.startTimestamp = startTime;
-
-        return mainMenu;
+    public RichPresence initMenu() {
+        mainMenu.setStartTimestamp(startTime);
+        return mainMenu.build();
     }
 
-    public DiscordRichPresence initMP(String ip) {
+    public RichPresence initMP(String ip) {
         ServerDisplay server = dataManager.getServerDisplays().get(ip);
 
         if (server != null) {
-            inGame.largeImageKey = server.getKey();
-            inGame.largeImageText = String.format(dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.ip, server.getName());
+            inGame.setLargeImage(server.getKey(),
+                    String.format(dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.ip,
+                            server.getName()));
         } else if (this.config.hideUnknownIPs) {
-            inGame.largeImageKey = "state-unknown-server";
-            inGame.largeImageText = dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.unknown;
+            inGame.setLargeImage("state-unknown-server",
+                    dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.unknown);
         } else {
-            inGame.largeImageKey = "state-unknown-server";
-            inGame.largeImageText = String.format(dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.ip, ip);
+            inGame.setLargeImage("state-unknown-server",
+                    String.format(dataManager.getGUIDisplay().inGame.multiPlayer.largeImageText.ip,
+                            ip));
         }
 
-        inGame.state = dataManager.getGUIDisplay().inGame.multiPlayer.state;
-        inGame.details = String.format(dataManager.getGUIDisplay().inGame.multiPlayer.details, UplinkAPI.forgeImpl.getIGN());
-        inGame.startTimestamp = startTime;
-        inGame.partyId = ip;
-        inGame.partySize = 0;
-        inGame.partyMax = 0;
+        inGame.setState(dataManager.getGUIDisplay().inGame.multiPlayer.state)
+                .setDetails(String.format(dataManager.getGUIDisplay().inGame.multiPlayer.details, UplinkAPI.forgeImpl.getIGN()))
+                .setStartTimestamp(startTime)
+                .setParty(ip, 0, 0);
 
-        return inGame;
+        return inGame.build();
     }
 
-    public DiscordRichPresence updatePlayerCount(int playerCount, int maxPlayers) {
-        inGame.partySize = playerCount;
-        inGame.partyMax = maxPlayers;
-
-        return inGame;
+    public RichPresence updatePlayerCount(int playerCount, int maxPlayers) {
+        inGame.setParty("0", playerCount, maxPlayers);
+        return inGame.build();
     }
 
-    public DiscordRichPresence initSP(String world) {
-        inGame.state = dataManager.getGUIDisplay().inGame.singlePlayer.state;
-        inGame.details = String.format(dataManager.getGUIDisplay().inGame.singlePlayer.details, UplinkAPI.forgeImpl.getIGN());
-        inGame.startTimestamp = startTime;
-        inGame.largeImageKey = "state-singleplayer";
-        inGame.largeImageText = String.format(dataManager.getGUIDisplay().inGame.singlePlayer.largeImageText, world);
-        inGame.partyId = "";
-        inGame.partySize = 0;
-        inGame.partyMax = 0;
-
-        return inGame;
+    public RichPresence initSP(String world) {
+        inGame.setState(dataManager.getGUIDisplay().inGame.singlePlayer.state);
+        inGame.setDetails(String.format(dataManager.getGUIDisplay().inGame.singlePlayer.details, UplinkAPI.forgeImpl.getIGN()));
+        inGame.setStartTimestamp(startTime);
+        inGame.setLargeImage("state-singleplayer",
+                String.format(dataManager.getGUIDisplay().inGame.singlePlayer.largeImageText, world));
+        inGame.setParty("", 0, 0);
+        return inGame.build();
     }
 }
