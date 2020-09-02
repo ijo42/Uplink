@@ -57,7 +57,7 @@ public class UplinkAPI {
 
         PresenceManager manager = new PresenceManager(dataManager, config);
 
-        RPC = new IPCClient(Integer.parseInt(manager.getConfig().clientId));
+        RPC = new IPCClient(Long.parseLong(manager.getConfig().clientId));
 
         Thread callbackHandler = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
