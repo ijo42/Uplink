@@ -8,5 +8,7 @@ dependencies {
 // https://mvnrepository.com/artifact/commons-logging/commons-logging
     compileOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
 
-    ship 'com.jagrosh:DiscordIPC:0.4'
+    ship "org.json:json:20171018"
+    ship "com.kohlschutter.junixsocket:junixsocket-common:2.0.4"
+    ship "com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4"
 }
