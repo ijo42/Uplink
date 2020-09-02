@@ -3,6 +3,8 @@ package ru.ijo42.uplink.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jagrosh.discordipc.IPCClient;
+import com.jagrosh.discordipc.IPCListener;
+import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ijo42.uplink.api.config.Config;
@@ -61,6 +63,7 @@ public class UplinkAPI {
             while (!Thread.currentThread().isInterrupted()) {
                 RPC.getStatus();
                 try {
+                    //noinspection BusyWait
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     RPC.close();
@@ -72,9 +75,20 @@ public class UplinkAPI {
 
         Runtime.getRuntime().addShutdownHook(new Thread(callbackHandler::interrupt));
 
-        RPC.sendRichPresence(manager.initLoading());
+        try {
+            RPC.setListener(new IPCListener() {
+                @Override
+                public void onReady(IPCClient client) {
+                    RPC.sendRichPresence(manager.initLoading());
 
-        presenceListener.init(RPC, manager);
+                    presenceListener.init(RPC, manager);
+                }
+            });
+            RPC.connect();
+        } catch (NoDiscordClientException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
     }
 
     public static InputStream getResource(String name) {
