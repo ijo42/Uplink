@@ -49,8 +49,9 @@ public class UnixPipe extends Pipe {
     public Packet read() throws IOException, JSONException {
         InputStream is = socket.getInputStream();
 
-        while (is.available() == 0 && status == PipeStatus.CONNECTED) {
+        while ((status == PipeStatus.CONNECTED || status == PipeStatus.CLOSING) && is.available() == 0) {
             try {
+                //noinspection BusyWait
                 Thread.sleep(50);
             } catch (InterruptedException ignored) {
             }
@@ -92,6 +93,7 @@ public class UnixPipe extends Pipe {
     @Override
     public void close() throws IOException {
         LOGGER.debug("Closing IPC pipe...");
+        status = PipeStatus.CLOSING;
         send(Packet.OpCode.CLOSE, new JSONObject(), null);
         status = PipeStatus.CLOSED;
         socket.close();

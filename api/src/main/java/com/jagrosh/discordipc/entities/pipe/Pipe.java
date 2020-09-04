@@ -168,7 +168,7 @@ public abstract class Pipe {
      * @return The IPC location.
      */
     private static String getPipeLocation(int i) {
-        if (System.getProperty("os.name").contains("Win"))
+        if (System.getProperty("os.name").toLowerCase().contains("win"))
             return "\\\\?\\pipe\\discord-ipc-" + i;
         String tmppath = null;
         for (String str : unixPaths) {
