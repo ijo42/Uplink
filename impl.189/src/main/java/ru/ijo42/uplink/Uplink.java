@@ -15,19 +15,15 @@ import ru.ijo42.uplink.api.UplinkAPI;
 import java.nio.file.Path;
 
 @Mod(
-        modid = Uplink.MOD_ID,
-        name = Uplink.MOD_NAME,
-        version = Uplink.VERSION
+        modid = Constants.MOD_ID,
+        name = Constants.MOD_NAME,
+        version = Constants.VERSION
 )
 public class Uplink {
-
-    public static final String MOD_ID = "uplink";
-    public static final String MOD_NAME = "Uplink";
-    public static final String VERSION = "@VERSION@";
     /**
      * This is the instance of your mod as created by Forge. It will never be null.
      */
-    @Mod.Instance(MOD_ID)
+    @Mod.Instance(Constants.MOD_ID)
     public static Uplink INSTANCE;
 
 

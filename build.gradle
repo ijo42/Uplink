@@ -21,10 +21,6 @@ subprojects {
     apply plugin: "net.kyori.blossom"
     apply plugin: "com.github.johnrengelman.shadow"
 
-    blossom {
-        replaceToken '@VERSION@', rootProject.getVersion()
-    }
-
     version = rootProject.getVersion()
     group = rootProject.getGroup()
     archivesBaseName = rootProject.getArchivesBaseName()

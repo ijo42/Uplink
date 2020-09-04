@@ -17,6 +17,7 @@ minecraft {
     mappings = rootProject.mcp_version189
 }
 
+evaluationDependsOn(':api')
 dependencies {
     ship project(':api')
 }
