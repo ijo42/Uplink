@@ -21,7 +21,7 @@ public class UplinkAPI {
     private static IPCClient RPC;
 
     public static Logger getLogger() {
-        return logger == null ? LogManager.getLogger("Uplink") : logger;
+        return logger == null ? LogManager.getLogger(UplinkAPI.class) : logger;
     }
 
     public static void init(ForgeAPI forgeImpl, Logger logger, PresenceListener presenceListener) {
@@ -35,7 +35,7 @@ public class UplinkAPI {
             try {
                 Files.copy(getResource("Uplink.json"), configPath);
             } catch (Exception e) {
-                logger.error("Could not copy default config to " + configPath, e);
+                getLogger().error("Could not copy default config to " + configPath, e);
                 return;
             }
         }
@@ -49,7 +49,7 @@ public class UplinkAPI {
                     gson.fromJson(Files.newBufferedReader(configPath), Config.class)
             );
         } catch (Exception e) {
-            logger.error("Could not load config", e);
+            getLogger().error("Could not load config", e);
             return;
         }
 
@@ -86,7 +86,7 @@ public class UplinkAPI {
             });
             RPC.connect();
         } catch (NoDiscordClientException e) {
-            logger.error(e);
+            getLogger().error(e);
             e.printStackTrace();
         }
     }

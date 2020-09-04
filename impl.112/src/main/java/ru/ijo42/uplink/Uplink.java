@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.logging.log4j.LogManager;
 import ru.ijo42.uplink.api.ForgeAPI;
 import ru.ijo42.uplink.api.PresenceListener;
 import ru.ijo42.uplink.api.UplinkAPI;
@@ -105,7 +104,7 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-        LogManager.getLogger("Uplink").error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
+        UplinkAPI.getLogger().error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 
 }
