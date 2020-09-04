@@ -18,22 +18,23 @@ public class PresenceManager {
 
     private final DisplayDataManager dataManager;
     private final Config config;
-    private final RichPresence.Builder loadingGame = new RichPresence.Builder();
-    private final RichPresence.Builder mainMenu = new RichPresence.Builder();
-    private final RichPresence.Builder inGame = new RichPresence.Builder();
+    private final RichPresence.Builder
+            loadingGame = new RichPresence.Builder(),
+            mainMenu = new RichPresence.Builder(),
+            inGame = new RichPresence.Builder();
     private PresenceState curState = PresenceState.INIT;
 
     public PresenceManager(DisplayDataManager dataManager, Config config) {
         this.dataManager = dataManager;
         this.config = config;
 
-        loadingGame.setState(dataManager.getGUIDisplay().loadingGame.state);
-        loadingGame.setLargeImage("state-load",
-                dataManager.getGUIDisplay().loadingGame.largeImageText);
+        loadingGame.setState(dataManager.getGUIDisplay().loadingGame.state)
+                .setLargeImage("state-load",
+                        dataManager.getGUIDisplay().loadingGame.largeImageText);
 
-        mainMenu.setState(dataManager.getGUIDisplay().mainMenu.state);
-        mainMenu.setLargeImage("state-menu",
-                dataManager.getGUIDisplay().mainMenu.largeImageText);
+        mainMenu.setState(dataManager.getGUIDisplay().mainMenu.state)
+                .setLargeImage("state-menu",
+                        dataManager.getGUIDisplay().mainMenu.largeImageText);
 
         SmallDisplay smallData = dataManager.getSmallDisplays().get(this.config.smallDataUid);
 
@@ -73,14 +74,13 @@ public class PresenceManager {
 
     public RichPresence initLoading() {
         int mods = UplinkAPI.forgeImpl.getModsCount();
-        loadingGame.setStartTimestamp(startTime);
-        loadingGame.setDetails(String.format(dataManager.getGUIDisplay().loadingGame.details, mods));
-        return loadingGame.build();
+        return loadingGame.setStartTimestamp(startTime)
+                .setDetails(String.format(dataManager.getGUIDisplay().loadingGame.details, mods))
+                .build();
     }
 
     public RichPresence initMenu() {
-        mainMenu.setStartTimestamp(startTime);
-        return mainMenu.build();
+        return mainMenu.setStartTimestamp(startTime).build();
     }
 
     public RichPresence initMP(String ip) {
@@ -99,26 +99,22 @@ public class PresenceManager {
                             ip));
         }
 
-        inGame.setState(dataManager.getGUIDisplay().inGame.multiPlayer.state)
+        return inGame.setState(dataManager.getGUIDisplay().inGame.multiPlayer.state)
                 .setDetails(String.format(dataManager.getGUIDisplay().inGame.multiPlayer.details, UplinkAPI.forgeImpl.getIGN()))
                 .setStartTimestamp(startTime)
-                .setParty(ip, 0, 0);
-
-        return inGame.build();
+                .setParty(ip, 0, 0).build();
     }
 
-    public RichPresence updatePlayerCount(int playerCount, int maxPlayers) {
-        inGame.setParty("0", playerCount, maxPlayers);
-        return inGame.build();
+    public RichPresence updatePlayerCount(String partyID, int playerCount, int maxPlayers) {
+        return inGame.setParty(partyID, playerCount, maxPlayers).build();
     }
 
     public RichPresence initSP(String world) {
-        inGame.setState(dataManager.getGUIDisplay().inGame.singlePlayer.state);
-        inGame.setDetails(String.format(dataManager.getGUIDisplay().inGame.singlePlayer.details, UplinkAPI.forgeImpl.getIGN()));
-        inGame.setStartTimestamp(startTime);
-        inGame.setLargeImage("state-singleplayer",
-                String.format(dataManager.getGUIDisplay().inGame.singlePlayer.largeImageText, world));
-        inGame.setParty("", 0, 0);
-        return inGame.build();
+        return inGame.setState(dataManager.getGUIDisplay().inGame.singlePlayer.state)
+                .setDetails(String.format(dataManager.getGUIDisplay().inGame.singlePlayer.details, UplinkAPI.forgeImpl.getIGN()))
+                .setStartTimestamp(startTime)
+                .setLargeImage("state-singleplayer",
+                        String.format(dataManager.getGUIDisplay().inGame.singlePlayer.largeImageText, world))
+                .build();
     }
 }

@@ -28,7 +28,10 @@ public abstract class PresenceListener {
                 int maxPlayers = UplinkAPI.forgeImpl.getMaxPlayers();
 
                 if (this.curPlayerCount != playerCount) {
-                    rpc.sendRichPresence(presenceManager.updatePlayerCount(playerCount, maxPlayers));
+                    rpc.sendRichPresence(presenceManager.updatePlayerCount(
+                            (UplinkAPI.forgeImpl.isMP() ? UplinkAPI.forgeImpl.getServerIP() :
+                                    UplinkAPI.forgeImpl.getWorldName()),
+                            playerCount, maxPlayers));
                     this.curPlayerCount = playerCount;
                 }
             } catch (NullPointerException ignored) {
