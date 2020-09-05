@@ -8,9 +8,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import ru.ijo42.uplink.api.PresenceListener;
 import ru.ijo42.uplink.api.PresenceState;
 
-public class PresenceListener extends ru.ijo42.uplink.api.PresenceListener {
+public class PresenceListenerImpl extends PresenceListener {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {

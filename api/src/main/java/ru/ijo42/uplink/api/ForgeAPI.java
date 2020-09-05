@@ -18,4 +18,6 @@ public interface ForgeAPI {
     String getServerIP();
 
     String getWorldName();
+
+    void afterInit(PresenceListener listener);
 }

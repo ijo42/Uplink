@@ -3,8 +3,8 @@
     "modid": "uplink",
     "name": "Uplink",
     "description": "Minecraft Mod thats add a Discord Rich Presence",
-    "version": "${version}",
-    "mcversion": "${mcversion}",
+    "version": "",
+    "mcversion": "",
     "url": "https://curseforge.com/minecraft/mc-mods/uplink",
     "updateUrl": "",
     "authorList": [

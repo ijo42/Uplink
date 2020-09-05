@@ -8,33 +8,25 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.logging.log4j.LogManager;
 import ru.ijo42.uplink.api.ForgeAPI;
+import ru.ijo42.uplink.api.PresenceListener;
 import ru.ijo42.uplink.api.UplinkAPI;
-import ru.ijo42.uplink.api.util.NativeUtil;
 
 import java.nio.file.Path;
 
 @SuppressWarnings("ConstantConditions")
 @Mod(
-        modid = Uplink.MOD_ID,
-        name = Uplink.MOD_NAME,
-        version = Uplink.VERSION
+        modid = Constants.MOD_ID,
+        name = Constants.MOD_NAME,
+        version = Constants.VERSION,
+        certificateFingerprint = Constants.FINGERPRINT
 )
 public class Uplink {
-
-    public static final String MOD_ID = "uplink";
-    public static final String MOD_NAME = "Uplink";
-    public static final String VERSION = "@VERSION@";
     /**
      * This is the instance of your mod as created by Forge. It will never be null.
      */
-    @Mod.Instance(MOD_ID)
+    @Mod.Instance(Constants.MOD_ID)
     public static Uplink INSTANCE;
-
-    static {
-        NativeUtil.loadNativeLibrary();
-    }
 
     /**
      * This is the first initialization event. Register tile entities here.
@@ -42,7 +34,7 @@ public class Uplink {
      */
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        PresenceListener listener = new PresenceListener();
+        PresenceListenerImpl listener = new PresenceListenerImpl();
         UplinkAPI.init(new ForgeAPI() {
             @Override
             public int getModsCount() {
@@ -83,8 +75,12 @@ public class Uplink {
             public String getWorldName() {
                 return Minecraft.getMinecraft().getIntegratedServer().getWorldName();
             }
+
+            @Override
+            public void afterInit(PresenceListener listener) {
+                MinecraftForge.EVENT_BUS.register(listener);
+            }
         }, event.getModLog(), listener);
-        MinecraftForge.EVENT_BUS.register(listener);
     }
 
     /**
@@ -105,7 +101,7 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-        LogManager.getLogger("Uplink").error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
+        UplinkAPI.getLogger().error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 
 }
