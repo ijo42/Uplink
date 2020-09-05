@@ -71,6 +71,8 @@ subprojects {
         options.incremental = true // one flag, and things will get so MUCH faster
     }
     sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+    apply from: "https://gist.githubusercontent.com/ijo42/6b215e76269a72f37194b924ddda038e/raw/signjar.groovy"
 }
 tasks.getByPath(':jar').enabled = false
 defaultTasks 'build'

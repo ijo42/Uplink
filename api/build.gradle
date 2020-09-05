@@ -1,5 +1,6 @@
 blossom {
     replaceToken '@VERSION@', rootProject.getVersion()
+    replaceToken '@FINGERPRINT@', rootProject.fingerprint
 }
 
 dependencies {

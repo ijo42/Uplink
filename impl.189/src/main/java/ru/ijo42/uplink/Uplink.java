@@ -17,7 +17,8 @@ import java.nio.file.Path;
 @Mod(
         modid = Constants.MOD_ID,
         name = Constants.MOD_NAME,
-        version = Constants.VERSION
+        version = Constants.VERSION,
+        certificateFingerprint = Constants.FINGERPRINT
 )
 public class Uplink {
     /**

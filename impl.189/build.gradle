@@ -42,3 +42,4 @@ processResources {
 }
 
 shadowJar.finalizedBy('reobfJar')
+build.dependsOn signJar
