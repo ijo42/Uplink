@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/ijo42/Uplink?style=for-the-badge)](https://github.com/ijo42/Uplink/blob/main/LICENSE) ![](http://cf.way2muchnoise.eu/333787.svg?badge_style=for_the_badge)![](http://cf.way2muchnoise.eu/versions/333787.svg?badge_style=for_the_badge)
+[![GitHub license](https://img.shields.io/github/license/ijo42/Uplink?style=for-the-badge)](https://github.com/ijo42/Uplink/blob/main/LICENSE) [![](http://cf.way2muchnoise.eu/333787.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/uplink)[![](http://cf.way2muchnoise.eu/versions/333787.svg?badge_style=for_the_badge)](https://www.curseforge.com/minecraft/mc-mods/uplink) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a40f82c461a844f9974e073659e58504?badge_style=for_the_badge)](https://www.codacy.com/manual/ijo42/Uplink?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ijo42/Uplink&amp;utm_campaign=Badge_Grade)
 
 *so...* That's a page of open-source *Minecraft* mod that has a name...
 
