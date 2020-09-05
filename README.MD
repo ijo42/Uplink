@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4f36d1a7066d41b3995a0aefee893f1c)](https://app.codacy.com/manual/ijo42/Uplink?utm_source=github.com&utm_medium=referral&utm_content=ijo42/Uplink&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub license](https://img.shields.io/github/license/ijo42/Uplink?style=for-the-badge)](https://github.com/ijo42/Uplink/blob/main/LICENSE) ![](http://cf.way2muchnoise.eu/333787.svg?badge_style=for_the_badge)![](http://cf.way2muchnoise.eu/versions/333787.svg?badge_style=for_the_badge)
 
 *so...* That's a page of open-source *Minecraft* mod that has a name...
