@@ -1,13 +1,13 @@
 package ru.ijo42.uplink;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import ru.ijo42.uplink.api.ForgeAPI;
 import ru.ijo42.uplink.api.PresenceListener;
 import ru.ijo42.uplink.api.UplinkAPI;
@@ -43,7 +43,7 @@ public class Uplink {
 
             @Override
             public int getPlayerCount() {
-                return Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap().size();
+                return Minecraft.getMinecraft().getNetHandler().playerInfoList.size();
             }
 
             @Override
