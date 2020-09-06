@@ -1,78 +1,114 @@
-plugins {
-    id 'java'
-    id 'net.kyori.blossom' version "1.1.0" apply false
-    id "com.github.johnrengelman.shadow" version "4.0.4" apply false
-}
-
-version = modVersion
-group = modGroup
-archivesBaseName = modBaseName
-
-subprojects {
-    buildscript {
-        repositories {
-            maven { url = 'https://files.minecraftforge.net/maven' }
-            jcenter()
-            mavenCentral()
-        }
-    }
-    apply plugin: 'idea'
-    apply plugin: 'java'
-    apply plugin: "net.kyori.blossom"
-    apply plugin: "com.github.johnrengelman.shadow"
-
-    version = rootProject.getVersion()
-    group = rootProject.getGroup()
-    archivesBaseName = rootProject.getArchivesBaseName()
-
+buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
         jcenter()
-        maven { url 'https://jitpack.io/' }
         maven {
-            name = "Forge"
-            url = "http://files.minecraftforge.net/maven"
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
         }
     }
-
-    configurations {
-        ship
-        compile.extendsFrom ship
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
     }
-
-    shadowJar {
-        classifier = ''
-        configurations = [project.configurations.ship]
-        from sourceSets.main.output
-    }
-
-    artifacts {
-        archives shadowJar
-    }
-
-    jar {
-        manifest {
-            attributes([
-                    "Specification-Title": rootProject.getName(),
-                    "Specification-Vendor": "ijo42",
-                    "Specification-Version": "1", // We are version 1 of ourselves
-                    "Implementation-Title": rootProject.getName(),
-                    "Implementation-Version": rootProject.getVersion(),
-                    "Implementation-Vendor" :"ijo42",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-            ])
-        }
-    }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        options.incremental = true // one flag, and things will get so MUCH faster
-    }
-    sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
-
-    apply from: "https://gist.githubusercontent.com/ijo42/6b215e76269a72f37194b924ddda038e/raw/signjar.groovy"
 }
-tasks.getByPath(':jar').enabled = false
+plugins {
+    id 'java'
+    id 'idea'
+    id 'net.kyori.blossom' version "1.1.0"
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+}
+apply plugin: "forge"
+blossom {
+    replaceToken '@MCVERSION@', project.minecraft_version1710
+}
+
+version = project.modVersion
+group = project.modGroup
+archivesBaseName = project.modBaseName + "-MC" + project.minecraft_version1710
+
+minecraft {
+    version = project.minecraft_version1710 + "-" + project.forge_version1710 + "-" + project.minecraft_version1710
+    runDir = "run"
+
+    mappings = project.mcp_version1710
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven {
+        name 'ForgeFS'
+        url 'http://files.minecraftforge.net/maven'
+    }
+    maven { url 'https://jitpack.io/' }
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/ijo42/uplink")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }}
+
+configurations {
+    ship
+    compile.extendsFrom ship
+}
+
+shadowJar {
+    classifier = ''
+    configurations = [project.configurations.ship]
+    from sourceSets.main.output
+}
+
+dependencies {
+    ship "ru.ijo42.uplink:api:" + project.getVersion()
+}
+
+artifacts {
+    archives shadowJar
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": project.getName(),
+                "Specification-Vendor": "ijo42",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.getName(),
+                "Implementation-Version": project.getVersion(),
+                "Implementation-Vendor" :"ijo42",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+processResources {
+    inputs.property "version", project.getVersion()
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+
+        expand "version": project.version, "mcversion": project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.incremental = true // one flag, and things will get so MUCH faster
+}
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+apply from: "https://gist.githubusercontent.com/ijo42/6b215e76269a72f37194b924ddda038e/raw/signjar.groovy"
+
 defaultTasks 'build'
+shadowJar.finalizedBy('reobf')
+build.dependsOn signJar
