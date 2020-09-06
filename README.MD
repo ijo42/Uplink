@@ -8,9 +8,17 @@ For what's.. They lets your friends see that you are playing on the server. *Its
 
 ![](https://github.com/ijo42/Uplink/raw/data/screenshots/Server.jpg) ![](https://github.com/ijo42/Uplink/raw/data/screenshots/Loading.jpg)
 
-The mod is currently running on ForgeAPI and the [DiscordIPC library](https://github.com/jagrosh/DiscordIPC)
+The mod is currently running on ForgeAPI and [DiscordIPC library](https://github.com/jagrosh/DiscordIPC)
 
-I've been digging through a lot of code recently and now the mod supports both Windows and MacOs with Linux
+What you can with it mod:
+
+- `Set your own name of App`
+- `Set your own texts for any state`
+- `Set your own images for any state`
+- `Set different small icons for different clients`
+- `Set different icons for different servers`
+- `Use it in your mod pack`
+- `Use on Windows, Linux and MacOs`
 
 ###### You can always download the latest version from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/uplink)
 
