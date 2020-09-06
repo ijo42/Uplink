@@ -1,0 +1,5 @@
+rootProject.name = 'Uplink'
+include 'api'
+file('.').eachDir { sub ->
+    if (sub.name.startsWith('impl')) include sub.name
+}
