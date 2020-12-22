@@ -5,8 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import ru.ijo42.uplink.api.config.Config;
 import ru.ijo42.uplink.api.util.DisplayDataManager;
 import ru.ijo42.uplink.api.util.MiscUtil;
@@ -17,16 +15,10 @@ import java.nio.file.Path;
 
 public class UplinkAPI {
     public static ForgeAPI forgeImpl;
-    private static Logger logger;
     private static IPCClient RPC;
 
-    public static Logger getLogger() {
-        return logger == null ? LogManager.getLogger(UplinkAPI.class) : logger;
-    }
-
-    public static void init(ForgeAPI forgeImpl, Logger logger, PresenceListener presenceListener) {
+    public static void init(ForgeAPI forgeImpl, PresenceListener presenceListener) {
         UplinkAPI.forgeImpl = forgeImpl;
-        UplinkAPI.logger = logger;
         setupPresenceManager(forgeImpl.getConfigDir().resolve("Uplink.json"), presenceListener);
     }
 
@@ -35,7 +27,8 @@ public class UplinkAPI {
             try {
                 Files.copy(getResource("Uplink.json"), configPath);
             } catch (Exception e) {
-                getLogger().error("Could not copy default config to " + configPath, e);
+                System.err.println("[Uplink] Could not copy default config to " + configPath);
+                System.err.println(e.toString());
                 return;
             }
         }
@@ -49,7 +42,8 @@ public class UplinkAPI {
                     gson.fromJson(Files.newBufferedReader(configPath), Config.class)
             );
         } catch (Exception e) {
-            getLogger().error("Could not load config", e);
+            System.err.println("[Uplink] Could not load config");
+            System.err.println(e.toString());
             return;
         }
 
@@ -86,7 +80,7 @@ public class UplinkAPI {
             });
             RPC.connect();
         } catch (NoDiscordClientException e) {
-            getLogger().error(e);
+            System.err.println(e.toString());
             e.printStackTrace();
         }
     }

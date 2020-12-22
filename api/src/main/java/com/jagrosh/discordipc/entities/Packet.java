@@ -16,7 +16,6 @@
 package com.jagrosh.discordipc.entities;
 
 import com.google.gson.JsonObject;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -29,7 +28,7 @@ import java.nio.ByteBuffer;
  */
 public class Packet {
     private final OpCode op;
-    private final JSONObject data;
+    private final JsonObject data;
     private final String encoding;
 
     /**
@@ -39,7 +38,7 @@ public class Packet {
      * @param data     The JSONObject payload of this new Packet.
      * @param encoding encoding to send packets as
      */
-    public Packet(OpCode op, JSONObject data, String encoding) {
+    public Packet(OpCode op, JsonObject data, String encoding) {
         this.op = op;
         this.data = data;
         this.encoding = encoding;
@@ -51,7 +50,8 @@ public class Packet {
      * @param op   The OpCode value of this new Packet.
      * @param data The JSONObject payload of this new Packet.
      */
-    public Packet(OpCode op, JSONObject data) {
+    @Deprecated
+    public Packet(OpCode op, JsonObject data) {
         this(op, data, "UTF-8");
     }
 
@@ -87,11 +87,11 @@ public class Packet {
     }
 
     /**
-     * Gets the {@link JSONObject} value as a part of this {@link Packet}.
+     * Gets the {@link JsonObject} value as a part of this {@link Packet}.
      *
      * @return The JSONObject value of this Packet.
      */
-    public JSONObject getJson() {
+    public JsonObject getJson() {
         return data;
     }
 

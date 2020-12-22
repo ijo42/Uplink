@@ -1,6 +1,5 @@
 package ru.ijo42.uplink.api.util;
 
-import org.apache.logging.log4j.Logger;
 import ru.ijo42.uplink.api.UplinkAPI;
 import ru.ijo42.uplink.api.config.Config;
 import ru.ijo42.uplink.api.config.display.GUIDisplay;
@@ -24,37 +23,36 @@ public class DisplayDataManager {
     public DisplayDataManager(Config config, Path configPath) {
         ServerDisplay[] serverArr = new ServerDisplay[ 0 ];
         SmallDisplay[] smallArr = new SmallDisplay[ 0 ];
-        Logger logger = UplinkAPI.getLogger();
         LoadingUtils.init(configPath);
 
         try {
             serverArr = LoadingUtils.load(new ServerDisplay(), config);
 
         } catch (MalformedURLException e) {
-            logger.error("[ServerDisplay] URL is broken => Using default");
+            System.err.println("[Uplink->ServerDisplay] URL is broken => Using default");
         } catch (IOException e) {
-            logger.error(e);
-            logger.error("[ServerDisplay] Load from local File is not working => Using default");
+            System.err.println(e.toString());
+            System.err.println("[Uplink->ServerDisplay] Load from local File is not working => Using default");
         }
 
         try {
             smallArr = LoadingUtils.load(new SmallDisplay(), config);
 
         } catch (MalformedURLException e) {
-            logger.error("[SmallDisplay] URL is broken => Using default");
+            System.err.println("[Uplink->SmallDisplay] URL is broken => Using default");
         } catch (IOException e) {
-            logger.error(e);
-            logger.error("[SmallDisplay] Load from local File is not working => Using default");
+            System.out.println(e.toString());
+            System.err.println("[Uplink->SmallDisplay] Load from local File is not working => Using default");
         }
 
         try {
             guiDisplay = LoadingUtils.load(new GUIDisplay(), config);
 
         } catch (MalformedURLException e) {
-            logger.error("[GUIDisplay] URL is broken => Using default");
+            System.err.println("[Uplink->GUIDisplay] URL is broken => Using default");
         } catch (IOException e) {
-            logger.error(e);
-            logger.error("[GUIDisplay] Load from local File is not working => Using default");
+            System.out.println(e.toString());
+            System.err.println("[Uplink->GUIDisplay] Load from local File is not working => Using default");
         }
 
         if (smallArr == null) {
@@ -72,8 +70,8 @@ public class DisplayDataManager {
         this.serverDisplays = Arrays.stream(serverArr)
                 .collect(Collectors.toMap(ServerDisplay::getUid, ServerDisplay::self));
 
-        logger.trace("Loaded Small Data: " + this.smallDisplays.keySet());
-        logger.trace("Loaded Servers: " + this.serverDisplays.keySet());
+        System.out.println("Loaded Small Data: " + this.smallDisplays.keySet());
+        System.out.println("Loaded Servers: " + this.serverDisplays.keySet());
     }
 
     public Map<String, SmallDisplay> getSmallDisplays() {

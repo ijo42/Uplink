@@ -16,13 +16,11 @@
 
 package com.jagrosh.discordipc.entities.pipe;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.entities.Callback;
 import com.jagrosh.discordipc.entities.Packet;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
@@ -33,8 +31,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class UnixPipe extends Pipe {
-
-    private static final Logger LOGGER = LogManager.getLogger(UnixPipe.class);
     private final AFUNIXSocket socket;
 
     UnixPipe(IPCClient ipcClient, HashMap<String, Callback> callbacks, String location) throws IOException {
@@ -44,42 +40,49 @@ public class UnixPipe extends Pipe {
         socket.connect(new AFUNIXSocketAddress(new File(location)));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public Packet read() throws IOException, JSONException {
+    public Packet read() throws IOException, JsonParseException {
         InputStream is = socket.getInputStream();
 
         while ((status == PipeStatus.CONNECTED || status == PipeStatus.CLOSING) && is.available() == 0) {
             try {
-                //noinspection BusyWait
                 Thread.sleep(50);
             } catch (InterruptedException ignored) {
             }
         }
 
-        /*byte[] buf = new byte[is.available()];
-        is.read(buf, 0, buf.length);
-        LOGGER.info(new String(buf));
-
-        if (true) return null;*/
-
         if (status == PipeStatus.DISCONNECTED)
             throw new IOException("Disconnected!");
 
         if (status == PipeStatus.CLOSED)
-            return new Packet(Packet.OpCode.CLOSE, null);
+            return new Packet(Packet.OpCode.CLOSE, null, ipcClient.getEncoding());
 
         // Read the op and length. Both are signed ints
-        byte[] d = new byte[ 8 ];
-        is.read(d);
+        byte[] d = new byte[8];
+        int readResult = is.read(d);
         ByteBuffer bb = ByteBuffer.wrap(d);
 
-        Packet.OpCode op = Packet.OpCode.values()[ Integer.reverseBytes(bb.getInt()) ];
-        d = new byte[ Integer.reverseBytes(bb.getInt()) ];
+        if (ipcClient.isDebugMode()) {
+            System.out.println(String.format("Read Byte Data: %s with result %s", new String(d), readResult));
+        }
 
-        is.read(d);
-        Packet p = new Packet(op, new JSONObject(new String(d)));
-        LOGGER.debug(String.format("Received packet: %s", p.toString()));
+        Packet.OpCode op = Packet.OpCode.values()[Integer.reverseBytes(bb.getInt())];
+        d = new byte[Integer.reverseBytes(bb.getInt())];
+
+        int reversedResult = is.read(d);
+
+        if (ipcClient.isDebugMode()) {
+            System.out.println(String.format("Read Reversed Byte Data: %s with result %s", new String(d), reversedResult));
+        }
+
+        JsonObject packetData = new JsonObject();
+        packetData.addProperty("", new String(d));
+        Packet p = new Packet(op, packetData, ipcClient.getEncoding());
+
+        if (ipcClient.isDebugMode()) {
+            System.out.println(String.format("Received packet: %s", p.toString()));
+        }
+
         if (listener != null)
             listener.onPacketReceived(ipcClient, p);
         return p;
@@ -92,9 +95,12 @@ public class UnixPipe extends Pipe {
 
     @Override
     public void close() throws IOException {
-        LOGGER.debug("Closing IPC pipe...");
+        if (ipcClient.isDebugMode()) {
+            System.out.println("Closing IPC pipe...");
+        }
+
         status = PipeStatus.CLOSING;
-        send(Packet.OpCode.CLOSE, new JSONObject(), null);
+        send(Packet.OpCode.CLOSE, new JsonObject(), null);
         status = PipeStatus.CLOSED;
         socket.close();
     }

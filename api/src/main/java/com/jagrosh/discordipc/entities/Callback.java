@@ -93,6 +93,8 @@ public class Callback {
 
     /**
      * Launches the success {@link Consumer}.
+     *
+     * @param packet The Packet to execute after success
      */
     public void succeed(Packet packet) {
         if (success != null)

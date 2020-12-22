@@ -42,9 +42,16 @@ subprojects {
     }
 
     shadowJar {
-        classifier = ''
+        classifier ''
         configurations = [project.configurations.ship]
         from sourceSets.main.output
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        exclude('dummyThing')
+        exclude('META-INF/maven/')
+        exclude('META-INF/nar/')
+        exclude('module-info.class')
+        exclude('META-INF/versions/')
     }
 
     artifacts {
@@ -54,6 +61,7 @@ subprojects {
     jar {
         manifest {
             attributes([
+                    "ModSide": "CLIENT",
                     "Specification-Title": rootProject.getName(),
                     "Specification-Vendor": "ijo42",
                     "Specification-Version": "1", // We are version 1 of ourselves

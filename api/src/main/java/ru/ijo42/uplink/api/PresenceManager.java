@@ -10,11 +10,7 @@ import java.time.OffsetDateTime;
 
 public class PresenceManager {
 
-    public static final OffsetDateTime startTime;
-
-    static {
-        startTime = OffsetDateTime.now();
-    }
+    public static final long startTime = System.currentTimeMillis();
 
     private final DisplayDataManager dataManager;
     private final Config config;

@@ -80,7 +80,7 @@ public class Uplink {
             public void afterInit(PresenceListener listener) {
                 MinecraftForge.EVENT_BUS.register(listener);
             }
-        }, event.getModLog(), listener);
+        }, listener);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Uplink {
 
     @Mod.EventHandler
     public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-        UplinkAPI.getLogger().error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
+        System.err.println("Invalid fingerprint detected! The file " + event.description() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 
 }
