@@ -57,9 +57,16 @@ configurations {
 }
 
 shadowJar {
-    classifier = ''
+    classifier ''
     configurations = [project.configurations.ship]
     from sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    exclude('dummyThing')
+    exclude('META-INF/maven/')
+    exclude('META-INF/nar/')
+    exclude('module-info.class')
+    exclude('META-INF/versions/')
 }
 
 dependencies {
@@ -73,12 +80,13 @@ artifacts {
 jar {
     manifest {
         attributes([
-                "Specification-Title": project.getName(),
-                "Specification-Vendor": "ijo42",
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": project.getName(),
-                "Implementation-Version": project.getVersion(),
-                "Implementation-Vendor" :"ijo42",
+                "ModSide"                 : "CLIENT",
+                "Specification-Title"     : rootProject.getName(),
+                "Specification-Vendor"    : "ijo42",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : rootProject.getName(),
+                "Implementation-Version"  : rootProject.getVersion(),
+                "Implementation-Vendor"   : "ijo42",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

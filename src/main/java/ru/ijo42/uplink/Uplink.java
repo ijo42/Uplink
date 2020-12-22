@@ -21,12 +21,6 @@ import java.nio.file.Path;
         certificateFingerprint = Constants.FINGERPRINT
 )
 public class Uplink {
-    /**
-     * This is the instance of your mod as created by Forge. It will never be null.
-     */
-    @Mod.Instance(Constants.MOD_ID)
-    public static Uplink INSTANCE;
-
 
     /**
      * This is the first initialization event. Register tile entities here.
@@ -80,28 +74,12 @@ public class Uplink {
             public void afterInit(PresenceListener listener) {
                 MinecraftForge.EVENT_BUS.register(listener);
             }
-        }, event.getModLog(), listener);
-    }
-
-    /**
-     * This is the second initialization event. Register custom recipes
-     */
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-
-    }
-
-    /**
-     * This is the final initialization event. Register actions from other mods here
-     */
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-
+        }, listener);
     }
 
     @Mod.EventHandler
     public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-        UplinkAPI.getLogger().error("Invalid fingerprint detected! The file " + event.source.getName() + " may have been tampered with. This version will NOT be supported by the author!");
+        System.err.println("Invalid fingerprint detected! The file " + event.source.getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 
 }
