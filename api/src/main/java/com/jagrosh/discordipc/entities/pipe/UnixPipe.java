@@ -31,77 +31,77 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class UnixPipe extends Pipe {
-    private final AFUNIXSocket socket;
+	private final AFUNIXSocket socket;
 
-    UnixPipe(IPCClient ipcClient, HashMap<String, Callback> callbacks, String location) throws IOException {
-        super(ipcClient, callbacks);
+	UnixPipe(IPCClient ipcClient, HashMap<String, Callback> callbacks, String location) throws IOException {
+		super(ipcClient, callbacks);
 
-        socket = AFUNIXSocket.newInstance();
-        socket.connect(new AFUNIXSocketAddress(new File(location)));
-    }
+		socket = AFUNIXSocket.newInstance();
+		socket.connect(new AFUNIXSocketAddress(new File(location)));
+	}
 
-    @Override
-    public Packet read() throws IOException, JsonParseException {
-        InputStream is = socket.getInputStream();
+	@Override
+	public Packet read() throws IOException, JsonParseException {
+		InputStream is = socket.getInputStream();
 
-        while ((status == PipeStatus.CONNECTED || status == PipeStatus.CLOSING) && is.available() == 0) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ignored) {
-            }
-        }
+		while ((status == PipeStatus.CONNECTED || status == PipeStatus.CLOSING) && is.available() == 0) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException ignored) {
+			}
+		}
 
-        if (status == PipeStatus.DISCONNECTED)
-            throw new IOException("Disconnected!");
+		if (status == PipeStatus.DISCONNECTED)
+			throw new IOException("Disconnected!");
 
-        if (status == PipeStatus.CLOSED)
-            return new Packet(Packet.OpCode.CLOSE, null, ipcClient.getEncoding());
+		if (status == PipeStatus.CLOSED)
+			return new Packet(Packet.OpCode.CLOSE, null, ipcClient.getEncoding());
 
-        // Read the op and length. Both are signed ints
-        byte[] d = new byte[8];
-        int readResult = is.read(d);
-        ByteBuffer bb = ByteBuffer.wrap(d);
+		// Read the op and length. Both are signed ints
+		byte[] d = new byte[ 8 ];
+		int readResult = is.read(d);
+		ByteBuffer bb = ByteBuffer.wrap(d);
 
-        if (ipcClient.isDebugMode()) {
-            System.out.println(String.format("Read Byte Data: %s with result %s", new String(d), readResult));
-        }
+		if (ipcClient.isDebugMode()) {
+			System.out.printf("Read Byte Data: %s with result %s%n", new String(d), readResult);
+		}
 
-        Packet.OpCode op = Packet.OpCode.values()[Integer.reverseBytes(bb.getInt())];
-        d = new byte[Integer.reverseBytes(bb.getInt())];
+		Packet.OpCode op = Packet.OpCode.values()[ Integer.reverseBytes(bb.getInt()) ];
+		d = new byte[ Integer.reverseBytes(bb.getInt()) ];
 
-        int reversedResult = is.read(d);
+		int reversedResult = is.read(d);
 
-        if (ipcClient.isDebugMode()) {
-            System.out.println(String.format("Read Reversed Byte Data: %s with result %s", new String(d), reversedResult));
-        }
+		if (ipcClient.isDebugMode()) {
+			System.out.printf("Read Reversed Byte Data: %s with result %s%n", new String(d), reversedResult);
+		}
 
-        JsonObject packetData = new JsonObject();
-        packetData.addProperty("", new String(d));
-        Packet p = new Packet(op, packetData, ipcClient.getEncoding());
+		JsonObject packetData = new JsonObject();
+		packetData.addProperty("", new String(d));
+		Packet p = new Packet(op, packetData, ipcClient.getEncoding());
 
-        if (ipcClient.isDebugMode()) {
-            System.out.println(String.format("Received packet: %s", p.toString()));
-        }
+		if (ipcClient.isDebugMode()) {
+			System.out.printf("Received packet: %s%n", p.toString());
+		}
 
-        if (listener != null)
-            listener.onPacketReceived(ipcClient, p);
-        return p;
-    }
+		if (listener != null)
+			listener.onPacketReceived(ipcClient, p);
+		return p;
+	}
 
-    @Override
-    public void write(byte[] b) throws IOException {
-        socket.getOutputStream().write(b);
-    }
+	@Override
+	public void write(byte[] b) throws IOException {
+		socket.getOutputStream().write(b);
+	}
 
-    @Override
-    public void close() throws IOException {
-        if (ipcClient.isDebugMode()) {
-            System.out.println("Closing IPC pipe...");
-        }
+	@Override
+	public void close() throws IOException {
+		if (ipcClient.isDebugMode()) {
+			System.out.println("Closing IPC pipe...");
+		}
 
-        status = PipeStatus.CLOSING;
-        send(Packet.OpCode.CLOSE, new JsonObject(), null);
-        status = PipeStatus.CLOSED;
-        socket.close();
-    }
+		status = PipeStatus.CLOSING;
+		send(Packet.OpCode.CLOSE, new JsonObject(), null);
+		status = PipeStatus.CLOSED;
+		socket.close();
+	}
 }

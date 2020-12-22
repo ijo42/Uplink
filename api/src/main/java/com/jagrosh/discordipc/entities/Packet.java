@@ -27,86 +27,86 @@ import java.nio.ByteBuffer;
  * @author John Grosh (john.a.grosh@gmail.com)
  */
 public class Packet {
-    private final OpCode op;
-    private final JsonObject data;
-    private final String encoding;
+	private final OpCode op;
+	private final JsonObject data;
+	private final String encoding;
 
-    /**
-     * Constructs a new Packet using an {@link OpCode} and {@link JsonObject}.
-     *
-     * @param op       The OpCode value of this new Packet.
-     * @param data     The JSONObject payload of this new Packet.
-     * @param encoding encoding to send packets as
-     */
-    public Packet(OpCode op, JsonObject data, String encoding) {
-        this.op = op;
-        this.data = data;
-        this.encoding = encoding;
-    }
+	/**
+	 * Constructs a new Packet using an {@link OpCode} and {@link JsonObject}.
+	 *
+	 * @param op       The OpCode value of this new Packet.
+	 * @param data     The JSONObject payload of this new Packet.
+	 * @param encoding encoding to send packets as
+	 */
+	public Packet(OpCode op, JsonObject data, String encoding) {
+		this.op = op;
+		this.data = data;
+		this.encoding = encoding;
+	}
 
-    /**
-     * Constructs a new Packet using an {@link OpCode} and {@link JsonObject}.
-     *
-     * @param op   The OpCode value of this new Packet.
-     * @param data The JSONObject payload of this new Packet.
-     */
-    @Deprecated
-    public Packet(OpCode op, JsonObject data) {
-        this(op, data, "UTF-8");
-    }
+	/**
+	 * Constructs a new Packet using an {@link OpCode} and {@link JsonObject}.
+	 *
+	 * @param op   The OpCode value of this new Packet.
+	 * @param data The JSONObject payload of this new Packet.
+	 */
+	@Deprecated
+	public Packet(OpCode op, JsonObject data) {
+		this(op, data, "UTF-8");
+	}
 
-    /**
-     * Converts this {@link Packet} to a {@code byte} array.
-     *
-     * @return This Packet as a {@code byte} array.
-     */
-    public byte[] toBytes() {
-        String s = data.toString();
+	/**
+	 * Converts this {@link Packet} to a {@code byte} array.
+	 *
+	 * @return This Packet as a {@code byte} array.
+	 */
+	public byte[] toBytes() {
+		String s = data.toString();
 
-        byte[] d;
-        try {
-            d = s.getBytes(encoding);
-        } catch (UnsupportedEncodingException e) {
-            d = s.getBytes();
-        }
+		byte[] d;
+		try {
+			d = s.getBytes(encoding);
+		} catch (UnsupportedEncodingException e) {
+			d = s.getBytes();
+		}
 
-        ByteBuffer packet = ByteBuffer.allocate(d.length + 2 * Integer.BYTES);
-        packet.putInt(Integer.reverseBytes(op.ordinal()));
-        packet.putInt(Integer.reverseBytes(d.length));
-        packet.put(d);
-        return packet.array();
-    }
+		ByteBuffer packet = ByteBuffer.allocate(d.length + 2 * Integer.BYTES);
+		packet.putInt(Integer.reverseBytes(op.ordinal()));
+		packet.putInt(Integer.reverseBytes(d.length));
+		packet.put(d);
+		return packet.array();
+	}
 
-    /**
-     * Gets the {@link OpCode} value of this {@link Packet}.
-     *
-     * @return This Packet's OpCode.
-     */
-    public OpCode getOp() {
-        return op;
-    }
+	/**
+	 * Gets the {@link OpCode} value of this {@link Packet}.
+	 *
+	 * @return This Packet's OpCode.
+	 */
+	public OpCode getOp() {
+		return op;
+	}
 
-    /**
-     * Gets the {@link JsonObject} value as a part of this {@link Packet}.
-     *
-     * @return The JSONObject value of this Packet.
-     */
-    public JsonObject getJson() {
-        return data;
-    }
+	/**
+	 * Gets the {@link JsonObject} value as a part of this {@link Packet}.
+	 *
+	 * @return The JSONObject value of this Packet.
+	 */
+	public JsonObject getJson() {
+		return data;
+	}
 
-    @Override
-    public String toString() {
-        return "Pkt:" + getOp() + getJson().toString();
-    }
+	@Override
+	public String toString() {
+		return "Pkt:" + getOp() + getJson().toString();
+	}
 
-    /**
-     * Discord response OpCode values that are
-     * sent with response data to and from Discord
-     * and the {@link com.jagrosh.discordipc.IPCClient IPCClient}
-     * connected.
-     */
-    public enum OpCode {
-        HANDSHAKE, FRAME, CLOSE, PING, PONG
-    }
+	/**
+	 * Discord response OpCode values that are
+	 * sent with response data to and from Discord
+	 * and the {@link com.jagrosh.discordipc.IPCClient IPCClient}
+	 * connected.
+	 */
+	public enum OpCode {
+		HANDSHAKE, FRAME, CLOSE, PING, PONG
+	}
 }

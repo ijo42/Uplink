@@ -13,27 +13,27 @@ import ru.ijo42.uplink.api.PresenceState;
 
 public class PresenceListenerImpl extends PresenceListener {
 
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        super.onTick();
-    }
+	@SubscribeEvent
+	public void onTick(TickEvent.ClientTickEvent event) {
+		super.onTick();
+	}
 
-    @SubscribeEvent
-    public void onMainMenu(GuiOpenEvent event) {
-        if (event.gui instanceof GuiMainMenu && presenceManager.getCurState() != PresenceState.MENU_MAIN) {
-            super.onMainMenu();
-        }
-    }
+	@SubscribeEvent
+	public void onMainMenu(GuiOpenEvent event) {
+		if (event.gui instanceof GuiMainMenu && presenceManager.getCurState() != PresenceState.MENU_MAIN) {
+			super.onMainMenu();
+		}
+	}
 
-    @SubscribeEvent
-    public void onJoin(EntityJoinWorldEvent event) {
-        if (event.entity instanceof EntityPlayerMP || event.entity instanceof EntityPlayerSP) {
-            super.onJoin();
-        }  // Ignore non-players.
-    }
+	@SubscribeEvent
+	public void onJoin(EntityJoinWorldEvent event) {
+		if (event.entity instanceof EntityPlayerMP || event.entity instanceof EntityPlayerSP) {
+			super.onJoin();
+		}  // Ignore non-players.
+	}
 
-    @SubscribeEvent
-    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        super.onClientDisconnect();
-    }
+	@SubscribeEvent
+	public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+		super.onClientDisconnect();
+	}
 }

@@ -3,21 +3,21 @@ package ru.ijo42.uplink.api;
 import java.nio.file.Path;
 
 public interface ForgeAPI {
-    int getModsCount();
+	int getModsCount();
 
-    int getPlayerCount();
+	int getPlayerCount();
 
-    int getMaxPlayers();
+	int getMaxPlayers();
 
-    String getIGN();
+	String getIGN();
 
-    Path getConfigDir();
+	Path getConfigDir();
 
-    boolean isMP();
+	boolean isMP();
 
-    String getServerIP();
+	String getServerIP();
 
-    String getWorldName();
+	String getWorldName();
 
-    void afterInit(PresenceListener listener);
+	void afterInit(PresenceListener listener);
 }
