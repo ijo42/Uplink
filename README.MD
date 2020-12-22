@@ -22,9 +22,11 @@ What you can with it mod:
 
 ###### You can always download the latest version from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/uplink)
 
-The mod is periodically developed and updated in every possible way, and if you have any suggestions, welcome *aboard* to [Discord](https://discord.gg/4ZYazbM)
+The mod is periodically developed and updated in every possible way, and if you have any suggestions, welcome *aboard*
+to [Discord](https://discord.gg/4ZYazbM)
 
-Sometimes I think that I would write a full wiki, but laziness is ahead of me. [Something similar to a wiki](https://github.com/ijo42/Uplink/wiki)
+Sometimes I think that I would write a full wiki, but laziness is ahead of
+me. [Something similar to a wiki](https://github.com/ijo42/Uplink/wiki)
 
 ------
 
