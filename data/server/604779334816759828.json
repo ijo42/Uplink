@@ -1,5 +1,15 @@
 [
   {
+    "uid": "marzanna.ijo42.ru",
+    "key": "server-marzanna",
+    "name": "Marzanna Server"
+  },
+  {
+    "uid": "marzanna.ijo42.ru:25565",
+    "key": "server-marzanna",
+    "name": "Marzanna Server"
+  },
+  {
     "uid": "mc.ijo42.online",
     "key": "server-cascade",
     "name": "Cascade Server"
